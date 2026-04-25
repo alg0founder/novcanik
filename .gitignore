@@ -9,3 +9,7 @@ dist-ssr
 
 .DS_Store
 *.tsbuildinfo
+
+CLAUDE.md
+smart_finance_tracker/
+*.bat
