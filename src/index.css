@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-surface: #111417;
+  --color-surface-dim: #111417;
+  --color-surface-container-lowest: #0b0e11;
+  --color-surface-container-low: #191c1f;
+  --color-surface-container: #1d2023;
+  --color-surface-container-high: #272a2e;
+  --color-surface-container-highest: #323538;
+  --color-surface-bright: #37393d;
+  --color-surface-variant: #323538;
+  --color-on-surface: #e1e2e7;
+  --color-on-surface-variant: #dbc2ae;
+  --color-primary: #ffb874;
+  --color-primary-container: #f7931a;
+  --color-on-primary: #4b2800;
+  --color-on-primary-container: #603500;
+  --color-outline: #a38d7b;
+  --color-outline-variant: #554335;
+  --color-secondary: #c2c7cf;
+  --color-secondary-container: #42474e;
+  --color-error: #ffb4ab;
+  --color-background: #111417;
+  --color-on-background: #e1e2e7;
+
+  --font-display: 'Manrope', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #111417;
+  color: #e1e2e7;
+}
+
+.glass-card {
+  background: rgba(30, 35, 41, 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.primary-gradient {
+  background: linear-gradient(135deg, #f7931a 0%, #b45309 100%);
+}
+
+.centered-hero-gradient {
+  background: radial-gradient(circle at center, rgba(247, 147, 26, 0.08) 0%, rgba(17, 20, 23, 0) 70%);
+}
