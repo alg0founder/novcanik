@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Plus, Pencil, Trash2, X, GripVertical, Check, ChevronDown, ChevronUp, Lock, Mail, Coins, TrendingDown, TrendingUp, Smartphone, Share } from 'lucide-react'
+import { Plus, Pencil, Trash2, X, GripVertical, Check, ChevronDown, ChevronUp, Lock, Mail, Coins, TrendingDown, TrendingUp, Smartphone, Share, Code2, Github, Zap, CircleDollarSign } from 'lucide-react'
 import {
   DndContext, closestCenter, PointerSensor, TouchSensor,
   useSensor, useSensors, type DragEndEvent,
@@ -323,6 +323,7 @@ export function Podesavanja() {
   const [editingName, setEditingName] = useState(false)
   const [nameInput, setNameInput] = useState('')
   const [savingName, setSavingName] = useState(false)
+  const [showQR, setShowQR] = useState<'lightning' | 'usdt' | null>(null)
 
   const initials = getInitials(fullName, user?.email ?? null)
   const incomeCategories = categories.filter(c => c.type === 'income')
@@ -617,6 +618,95 @@ export function Podesavanja() {
         </section>
       )}
 
+
+      {/* OTVORENI KOD I SIGURNOST */}
+      <section>
+        <p className={sectionLabel}>Otvoreni kod i sigurnost</p>
+        <div className={`${card} p-6 flex flex-col md:flex-row items-center justify-between gap-6`}>
+          <div className="flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
+            <div className="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-400 shrink-0">
+              <Code2 size={24} />
+            </div>
+            <div>
+              <h4 className="text-lg font-bold text-white mb-1">Otvoreni kod i sigurnost</h4>
+              <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
+                Naš kod je u potpunosti otvoren kako bi svi mogli da se uvere u sigurnost i privatnost podataka. Mi nemamo pristup vašim podacima, niti bilo ko drugi.
+              </p>
+            </div>
+          </div>
+          <a
+            href="https://github.com/radisakicos/novcanik"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2.5 whitespace-nowrap bg-white/10 hover:bg-white/15 border border-white/10 text-white px-6 py-3 rounded-full font-bold text-sm transition-all active:scale-95 shrink-0"
+          >
+            <Github size={17} />
+            Pogledaj na GitHub-u
+          </a>
+        </div>
+      </section>
+
+      {/* PODRŽI PROJEKAT */}
+      <section>
+        <p className={sectionLabel}>Podrži projekat</p>
+        <div className={`${card} p-6 flex flex-col md:flex-row items-center justify-between gap-6`}>
+          <div className="flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
+            <div className="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-400 shrink-0">
+              <Zap size={24} />
+            </div>
+            <div>
+              <h4 className="text-lg font-bold text-white mb-1">Pomozite razvoju</h4>
+              <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
+                Novčanik je besplatan alat otvorenog koda. Vaše donacije nam pomažu da pokrijemo troškove servera i nastavimo sa razvojem novih funkcija za sve korisnike.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-3 shrink-0">
+            <button
+              onClick={() => setShowQR('lightning')}
+              className="flex flex-col items-center gap-1.5 px-5 py-3 bg-[#f7931a]/10 hover:bg-[#f7931a]/20 border border-[#f7931a]/30 rounded-2xl transition-all active:scale-95"
+            >
+              <Zap size={20} className="text-[#f7931a]" />
+              <span className="text-[11px] font-black text-white tracking-wide">Bitcoin Lightning</span>
+              <span className="text-[9px] font-bold text-[#f7931a] uppercase tracking-widest">Prikaži QR</span>
+            </button>
+            <button
+              onClick={() => setShowQR('usdt')}
+              className="flex flex-col items-center gap-1.5 px-5 py-3 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-2xl transition-all active:scale-95"
+            >
+              <CircleDollarSign size={20} className="text-emerald-400" />
+              <span className="text-[11px] font-black text-white tracking-wide">USDT (TRC20)</span>
+              <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest">Prikaži QR</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* QR modal */}
+      {showQR && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowQR(null)} />
+          <div className="relative w-full max-w-xs bg-[#111418] border border-white/10 rounded-2xl shadow-2xl p-6 text-center">
+            <button onClick={() => setShowQR(null)} className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+              <X size={18} />
+            </button>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 ${showQR === 'lightning' ? 'bg-[#f7931a]/10' : 'bg-emerald-500/10'}`}>
+              {showQR === 'lightning'
+                ? <Zap size={20} className="text-[#f7931a]" />
+                : <CircleDollarSign size={20} className="text-emerald-400" />}
+            </div>
+            <h3 className="text-base font-bold text-white mb-1">
+              {showQR === 'lightning' ? 'Bitcoin Lightning' : 'USDT (TRC20)'}
+            </h3>
+            <p className="text-xs text-slate-500 mb-4">Skenirajte QR kod vašim novčanikom</p>
+            <img
+              src={showQR === 'lightning' ? '/qr/Lightning.PNG' : '/qr/USDT.JPG'}
+              alt={showQR === 'lightning' ? 'Bitcoin Lightning QR' : 'USDT TRC20 QR'}
+              className="w-48 h-48 rounded-xl mx-auto object-contain"
+            />
+          </div>
+        </div>
+      )}
 
       {showPasswordModal && <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />}
       {addModalType && <CategoryFormModal category={null} type={addModalType} onClose={() => setAddModalType(null)} onSaved={refetch} />}
