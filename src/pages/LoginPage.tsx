@@ -259,7 +259,7 @@ export function LoginPage() {
                   value={inviteCode}
                   onChange={e => setInviteCode(e.target.value.toUpperCase())}
                   className="w-full px-3 py-2.5 border border-slate-700 rounded-lg bg-slate-800/50 text-[#e1e2e7] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all font-mono tracking-widest"
-                  placeholder="NOVCANIK-XXXXXX"
+                  placeholder=""
                 />
                 <p className="text-[11px] text-slate-600 mt-1">Kod dobijate od administratora.</p>
               </div>
@@ -287,6 +287,18 @@ export function LoginPage() {
                     : 'Pošalji link'}
             </button>
           </form>
+
+          {mode === 'signup' && (
+            <p className="text-center text-xs text-slate-500 mt-4">
+              Nemate invite kod?{' '}
+              <a
+                href="mailto:algo_founder@proton.me?subject=Novčanik - Zahtjev za pristup"
+                className="text-orange-400 hover:text-orange-300 transition-colors font-medium"
+              >
+                Javite se administratoru
+              </a>
+            </p>
+          )}
         </div>
       </div>
     </div>
