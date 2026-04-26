@@ -314,12 +314,12 @@ export function Podesavanja() {
       {/* MOJ PROFIL */}
       <section>
         <p className={sectionLabel}>Moj profil</p>
-        <div className={`${card} p-6 flex items-center justify-between gap-4`}>
-          <div className="flex items-center gap-5">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-orange-400 flex items-center justify-center shrink-0">
-              <span className="text-xl font-black text-[#2d1600]">{initials}</span>
+        <div className={`${card} p-6`}>
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-orange-500 to-orange-400 flex items-center justify-center shrink-0">
+              <span className="text-lg font-black text-[#2d1600]">{initials}</span>
             </div>
-            <div>
+            <div className="flex-1 min-w-0">
               {editingName ? (
                 <div className="flex items-center gap-2">
                   <input
@@ -327,26 +327,26 @@ export function Podesavanja() {
                     onChange={e => setNameInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') void handleSaveName() }}
                     placeholder="Ime i prezime"
-                    className="px-3 py-1.5 bg-white/5 border border-orange-500/50 rounded-lg text-white text-sm font-bold focus:outline-none"
+                    className="flex-1 min-w-0 px-3 py-1.5 bg-white/5 border border-orange-500/50 rounded-lg text-white text-sm font-bold focus:outline-none"
                   />
-                  <button onClick={() => void handleSaveName()} disabled={savingName} className="p-1.5 text-green-400 hover:text-green-300 transition-colors"><Check size={15} /></button>
-                  <button onClick={() => setEditingName(false)} className="p-1.5 text-slate-500 hover:text-slate-300 transition-colors"><X size={15} /></button>
+                  <button onClick={() => void handleSaveName()} disabled={savingName} className="p-1.5 text-green-400 hover:text-green-300 transition-colors shrink-0"><Check size={15} /></button>
+                  <button onClick={() => setEditingName(false)} className="p-1.5 text-slate-500 hover:text-slate-300 transition-colors shrink-0"><X size={15} /></button>
                 </div>
               ) : (
-                <p className="text-base font-bold text-white">{fullName ?? 'Dodaj ime i prezime'}</p>
+                <p className="text-base font-bold text-white truncate">{fullName ?? 'Dodaj ime i prezime'}</p>
               )}
-              <p className="text-sm text-slate-400 mt-0.5">{user?.email}</p>
+              <p className="text-sm text-slate-400 mt-0.5 truncate">{user?.email}</p>
             </div>
+            {!editingName && (
+              <button
+                onClick={() => { setNameInput(fullName ?? ''); setEditingName(true) }}
+                className="flex items-center gap-2 px-3 py-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-sm font-semibold text-white transition-all shrink-0"
+              >
+                <Pencil size={14} />
+                <span className="hidden sm:inline">Izmeni</span>
+              </button>
+            )}
           </div>
-          {!editingName && (
-            <button
-              onClick={() => { setNameInput(fullName ?? ''); setEditingName(true) }}
-              className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-sm font-semibold text-white transition-all shrink-0"
-            >
-              <Pencil size={14} />
-              Izmeni
-            </button>
-          )}
         </div>
       </section>
 
