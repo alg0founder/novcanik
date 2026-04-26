@@ -31,6 +31,7 @@ export function LoginPage() {
   const [mode, setMode] = useState<AuthMode>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [inviteCode, setInviteCode] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<string | null>(null)
@@ -57,6 +58,11 @@ export function LoginPage() {
       return
     }
 
+    if (mode === 'signup' && !inviteCode.trim()) {
+      setError('Invite kod je obavezan za registraciju.')
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -65,8 +71,36 @@ export function LoginPage() {
         if (error) throw error
         navigate('/')
       } else if (mode === 'signup') {
-        const { error } = await supabase.auth.signUp({ email, password })
-        if (error) throw error
+        // 1. Provjeri kod prije registracije
+        const { data: codeCheck } = await supabase
+          .from('invite_codes')
+          .select('used')
+          .eq('code', inviteCode.trim().toUpperCase())
+          .single()
+
+        if (!codeCheck) {
+          setError('Invite kod ne postoji.')
+          setLoading(false)
+          return
+        }
+        if (codeCheck.used) {
+          setError('Ovaj invite kod je već iskorišten.')
+          setLoading(false)
+          return
+        }
+
+        // 2. Registruj korisnika
+        const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({ email, password })
+        if (signUpErr) throw signUpErr
+
+        // 3. Atomično zauzmi kod
+        if (signUpData.user) {
+          await supabase.rpc('claim_invite_code', {
+            p_code: inviteCode.trim(),
+            p_user_id: signUpData.user.id,
+          })
+        }
+
         setInfo('Provjeri email i klikni link za potvrdu, pa se prijavi.')
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -210,6 +244,24 @@ export function LoginPage() {
                     </p>
                   </div>
                 )}
+              </div>
+            )}
+
+            {mode === 'signup' && (
+              <div>
+                <label htmlFor="invite" className="block text-sm font-medium text-slate-300 mb-1.5">
+                  Invite kod
+                </label>
+                <input
+                  id="invite"
+                  type="text"
+                  required
+                  value={inviteCode}
+                  onChange={e => setInviteCode(e.target.value.toUpperCase())}
+                  className="w-full px-3 py-2.5 border border-slate-700 rounded-lg bg-slate-800/50 text-[#e1e2e7] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all font-mono tracking-widest"
+                  placeholder="NOVCANIK-XXXXXX"
+                />
+                <p className="text-[11px] text-slate-600 mt-1">Kod dobijate od administratora.</p>
               </div>
             )}
 
