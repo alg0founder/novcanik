@@ -18,6 +18,7 @@ interface CardProps {
   label: string
   sub: string
   pct: number
+  maxPct: number
   recommended: number
   remainingBudget: number
   currency: string
@@ -25,8 +26,9 @@ interface CardProps {
   onSave: () => void
 }
 
-function BudgetCard({ label, sub, pct, recommended, remainingBudget, currency, onChange, onSave }: CardProps) {
+function BudgetCard({ label, sub, pct, maxPct, recommended, remainingBudget, currency, onChange, onSave }: CardProps) {
   const amount = Math.round((pct / 100) * remainingBudget)
+  const fillPct = maxPct > 0 ? (pct / maxPct) * 100 : 0
 
   return (
     <div className="bg-[#111418] rounded-xl p-6 border border-white/5 relative overflow-hidden">
@@ -54,18 +56,18 @@ function BudgetCard({ label, sub, pct, recommended, remainingBudget, currency, o
         <input
           type="range"
           min={0}
-          max={100}
+          max={maxPct}
           value={pct}
           onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(Number(e.target.value))}
           onMouseUp={onSave}
           onTouchEnd={onSave}
           className="w-full h-1 rounded-full appearance-none cursor-pointer accent-orange-500"
-          style={{ background: `linear-gradient(to right, #f97316 ${pct}%, rgba(255,255,255,0.05) ${pct}%)` }}
+          style={{ background: `linear-gradient(to right, #f97316 ${fillPct}%, rgba(255,255,255,0.05) ${fillPct}%)` }}
         />
         <div className="flex justify-between text-[10px] text-slate-600 font-bold">
           <span>0%</span>
           <span className="text-orange-500/50">{recommended}%</span>
-          <span>100%</span>
+          <span>{maxPct}%</span>
         </div>
       </div>
     </div>
@@ -173,30 +175,9 @@ export function Budzet() {
 
   const handleSliderChange = (key: SliderKey, newValue: number): void => {
     const otherKeys = SLIDER_CATEGORIES.map(c => c.key).filter(k => k !== key)
-    const remaining = 100 - newValue
-    const currentOthersSum = otherKeys.reduce((sum, k) => sum + sliders[k], 0)
-
-    const newSliders = { ...sliders, [key]: newValue }
-
-    if (currentOthersSum === 0) {
-      const each = Math.floor(remaining / otherKeys.length)
-      otherKeys.forEach((k, i) => {
-        newSliders[k] = i === otherKeys.length - 1 ? remaining - each * (otherKeys.length - 1) : each
-      })
-    } else {
-      let distributed = 0
-      otherKeys.forEach((k, i) => {
-        if (i === otherKeys.length - 1) {
-          newSliders[k] = Math.max(0, remaining - distributed)
-        } else {
-          const val = Math.max(0, Math.round((sliders[k] / currentOthersSum) * remaining))
-          newSliders[k] = val
-          distributed += val
-        }
-      })
-    }
-
-    setSliders(newSliders)
+    const othersSum = otherKeys.reduce((sum, k) => sum + sliders[k], 0)
+    const clamped = Math.min(newValue, 100 - othersSum)
+    setSliders(prev => ({ ...prev, [key]: clamped }))
   }
 
   const handleSliderSave = (): void => {
@@ -340,19 +321,25 @@ export function Budzet() {
               currency={currency}
               onEdit={() => setShowCostsModal(true)}
             />
-            {SLIDER_CATEGORIES.map(cat => (
-              <BudgetCard
-                key={cat.key}
-                label={cat.label}
-                sub={cat.sub}
-                pct={sliders[cat.key]}
-                recommended={cat.recommended}
-                remainingBudget={remainingBudget}
-                currency={currency}
-                onChange={v => handleSliderChange(cat.key, v)}
-                onSave={handleSliderSave}
-              />
-            ))}
+            {SLIDER_CATEGORIES.map(cat => {
+              const othersSum = SLIDER_CATEGORIES
+                .filter(c => c.key !== cat.key)
+                .reduce((sum, c) => sum + sliders[c.key], 0)
+              return (
+                <BudgetCard
+                  key={cat.key}
+                  label={cat.label}
+                  sub={cat.sub}
+                  pct={sliders[cat.key]}
+                  maxPct={100 - othersSum}
+                  recommended={cat.recommended}
+                  remainingBudget={remainingBudget}
+                  currency={currency}
+                  onChange={v => handleSliderChange(cat.key, v)}
+                  onSave={handleSliderSave}
+                />
+              )
+            })}
           </div>
         </>
       )}
