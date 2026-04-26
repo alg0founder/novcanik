@@ -292,7 +292,7 @@ export function LoginPage() {
             <p className="text-center text-xs text-slate-500 mt-4">
               Nemate invite kod?{' '}
               <a
-                href="mailto:algo_founder@proton.me?subject=Novčanik - Zahtjev za pristup"
+                href="mailto:algo_founder@proton.me?subject=Novčanik - Zahtev za pristup"
                 className="text-orange-400 hover:text-orange-300 transition-colors font-medium"
               >
                 Javite se administratoru
