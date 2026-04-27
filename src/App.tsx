@@ -8,6 +8,8 @@ import { AppShell } from './components/layout/AppShell'
 
 import { LoginPage } from './pages/LoginPage'
 import { ResetPasswordPage } from './pages/ResetPasswordPage'
+import { PrivacyPolicy } from './pages/PrivacyPolicy'
+import { TermsOfService } from './pages/TermsOfService'
 import { OnboardingPage } from './pages/OnboardingPage'
 import { Dashboard } from './pages/Dashboard'
 import { Transakcije } from './pages/Transakcije'
@@ -39,6 +41,8 @@ export function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
 
           <Route
             path="/onboarding"
