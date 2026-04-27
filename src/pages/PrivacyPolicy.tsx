@@ -1,14 +1,15 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 
 export function PrivacyPolicy() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   return (
     <div className="min-h-screen bg-[#111417] p-4 pb-12">
       <div className="max-w-2xl mx-auto">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(searchParams.get('from') === 'signup' ? '/login?tab=signup' : '/login')}
           className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-300 transition-colors mb-8 mt-4"
         >
           <ArrowLeft size={16} />

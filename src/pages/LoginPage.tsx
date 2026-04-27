@@ -1,5 +1,5 @@
 import { useState, useEffect, type FormEvent } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
 
 import { supabase } from '../lib/supabase'
@@ -39,7 +39,12 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { session } = useAuth()
+
+  useEffect(() => {
+    if (searchParams.get('tab') === 'signup') setMode('signup')
+  }, [searchParams])
 
   useEffect(() => {
     if (session) navigate('/', { replace: true })
@@ -281,11 +286,11 @@ export function LoginPage() {
                 />
                 <span className="text-xs text-slate-400 leading-relaxed">
                   Prihvatam{' '}
-                  <Link to="/privacy-policy" className="text-orange-400 hover:text-orange-300 transition-colors">
+                  <Link to="/privacy-policy?from=signup" className="text-orange-400 hover:text-orange-300 transition-colors">
                     Politiku privatnosti
                   </Link>
                   {' '}i{' '}
-                  <Link to="/terms-of-service" className="text-orange-400 hover:text-orange-300 transition-colors">
+                  <Link to="/terms-of-service?from=signup" className="text-orange-400 hover:text-orange-300 transition-colors">
                     Uslove korišćenja
                   </Link>
                 </span>
