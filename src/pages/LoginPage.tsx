@@ -281,11 +281,11 @@ export function LoginPage() {
                 />
                 <span className="text-xs text-slate-400 leading-relaxed">
                   Prihvatam{' '}
-                  <a href="/privacy-policy" target="_blank" className="text-orange-400 hover:text-orange-300 transition-colors">
+                  <a href="/privacy-policy" className="text-orange-400 hover:text-orange-300 transition-colors">
                     Politiku privatnosti
                   </a>
                   {' '}i{' '}
-                  <a href="/terms-of-service" target="_blank" className="text-orange-400 hover:text-orange-300 transition-colors">
+                  <a href="/terms-of-service" className="text-orange-400 hover:text-orange-300 transition-colors">
                     Uslove korišćenja
                   </a>
                 </span>
