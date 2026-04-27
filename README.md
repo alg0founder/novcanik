@@ -1,14 +1,31 @@
 # Novčanik
 
-Personal finance PWA for tracking income and expenses, built for the Serbian market.
+Besplatna PWA aplikacija za praćenje ličnih finansija, napravljena za srpsko tržište.
 
-## Privacy & Security
+Dostupna na: [novcanik.vercel.app](https://novcanik.vercel.app)
 
-This repository is public so anyone can verify how the app handles data.
+---
 
-**The author has no access to your data.** Every table in the database has Row Level Security (RLS) enforced at the database level — not just in application code. This means no query, script, or API call can return another user's data, regardless of who runs it.
+## Privatnost i anonimnost
 
-You can verify this yourself by reading [`schema.sql`](./schema.sql).
+Repozitorijum je javan kako bi svako mogao da proveri kako aplikacija rukuje podacima korisnika.
+
+Aplikacija je dizajnirana od temelja sa ciljem da ne zna ko ste vi:
+
+- **Email adresa** se ne verifikuje kao lični identitet — možete koristiti bilo koji email
+- **Ime i prezime** nisu obavezni i ne proveravaju se
+- **Pristupni kodovi** (invite) generišu se nasumično i automatski se brišu nakon 7 dana — ne postoji zapis o tome kome je koji kod dodeljen
+- **U bazi podataka** vaš nalog postoji isključivo kao nasumični tehnički identifikator (UUID)
+
+Rezultat je da ne postoji mogućnost da se podaci u aplikaciji povežu sa stvarnim identitetom korisnika.
+
+### Zaštita podataka
+
+Svaka tabela u bazi ima Row Level Security (RLS) primenjen na nivou baze, ne samo u kodu aplikacije. Nijedan upit, skripta niti API poziv ne može da vrati podatke drugog korisnika.
+
+Ovo možete sami proveriti čitanjem [`schema.sql`](./schema.sql).
+
+---
 
 ## Tech Stack
 
@@ -17,9 +34,11 @@ You can verify this yourself by reading [`schema.sql`](./schema.sql).
 - Supabase (PostgreSQL + Auth + RLS)
 - React Router v7
 - Recharts
-- PWA (installable on Android and iOS)
+- PWA (instalabilno na Android i iOS)
 
-## Running Locally
+---
+
+## Pokretanje lokalno
 
 ```bash
 git clone https://github.com/radisakicos/novcanik.git
@@ -27,19 +46,21 @@ cd novcanik
 npm install
 ```
 
-Create a `.env` file based on `.env.example` and add your own Supabase project credentials:
+Napravite `.env` fajl prema `.env.example` i dodajte sopstvene Supabase kredencijale:
 
 ```env
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-Run the database schema from [`schema.sql`](./schema.sql) in your Supabase SQL Editor, then:
+Pokrenite šemu baze iz [`schema.sql`](./schema.sql) u Supabase SQL Editoru, zatim:
 
 ```bash
 npm run dev
 ```
 
-## License
+---
 
-Source available for review. Redistribution, hosting, or commercial use without written permission is not allowed.
+## Licenca
+
+Kod je dostupan na uvid. Redistribucija, hostovanje ili komercijalna upotreba bez pisane dozvole nisu dozvoljeni.
