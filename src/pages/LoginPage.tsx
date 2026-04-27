@@ -32,6 +32,7 @@ export function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [inviteCode, setInviteCode] = useState('')
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<string | null>(null)
@@ -60,6 +61,11 @@ export function LoginPage() {
 
     if (mode === 'signup' && !inviteCode.trim()) {
       setError('Invite kod je obavezan za registraciju.')
+      return
+    }
+
+    if (mode === 'signup' && !agreedToTerms) {
+      setError('Morate prihvatiti Politiku privatnosti i Uslove korišćenja.')
       return
     }
 
@@ -263,6 +269,27 @@ export function LoginPage() {
                 />
                 <p className="text-[11px] text-slate-600 mt-1">Kod dobijate od administratora.</p>
               </div>
+            )}
+
+            {mode === 'signup' && (
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={e => setAgreedToTerms(e.target.checked)}
+                  className="mt-0.5 shrink-0 accent-orange-500"
+                />
+                <span className="text-xs text-slate-400 leading-relaxed">
+                  Prihvatam{' '}
+                  <a href="/privacy-policy" target="_blank" className="text-orange-400 hover:text-orange-300 transition-colors">
+                    Politiku privatnosti
+                  </a>
+                  {' '}i{' '}
+                  <a href="/terms-of-service" target="_blank" className="text-orange-400 hover:text-orange-300 transition-colors">
+                    Uslove korišćenja
+                  </a>
+                </span>
+              </label>
             )}
 
             {error && (
