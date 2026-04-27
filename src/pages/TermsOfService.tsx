@@ -15,7 +15,7 @@ export function TermsOfService() {
           Nazad
         </button>
 
-        <div className="prose prose-invert prose-sm max-w-none space-y-6">
+        <div className="max-w-none space-y-6">
           <div>
             <h1 className="text-2xl font-bold text-white mb-1">Uslovi korišćenja</h1>
             <p className="text-xs text-slate-500">Poslednje ažuriranje: april 2026.</p>
@@ -85,8 +85,7 @@ export function TermsOfService() {
           <section className="space-y-3">
             <h2 className="text-base font-bold text-white">Dostupnost</h2>
             <p className="text-sm text-slate-400 leading-relaxed">
-              Novčanik je besplatna aplikacija koja se pruža "kakva jeste". Ne garantujemo neprekidnu dostupnost
-              niti odsustvo grešaka. Preporučujemo povremeni export podataka kao lični backup.
+              Novčanik je besplatna aplikacija koja se pruža "kakva jeste". Ne garantujemo neprekidnu dostupnost niti odsustvo grešaka.
             </p>
           </section>
 
@@ -106,13 +105,6 @@ export function TermsOfService() {
                 algo_founder@proton.me
               </a>.
               Administrator može ugasiti nalog koji krši ove uslove korišćenja.
-            </p>
-          </section>
-
-          <section className="space-y-3">
-            <h2 className="text-base font-bold text-white">Merodavno pravo</h2>
-            <p className="text-sm text-slate-400 leading-relaxed">
-              Na ove uslove primenjuje se pravo Republike Srbije.
             </p>
           </section>
 

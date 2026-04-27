@@ -15,7 +15,7 @@ export function PrivacyPolicy() {
           Nazad
         </button>
 
-        <div className="prose prose-invert prose-sm max-w-none space-y-6">
+        <div className="max-w-none space-y-6">
           <div>
             <h1 className="text-2xl font-bold text-white mb-1">Politika privatnosti</h1>
             <p className="text-xs text-slate-500">Poslednje ažuriranje: april 2026.</p>
@@ -34,9 +34,7 @@ export function PrivacyPolicy() {
 
           <section className="space-y-3">
             <h2 className="text-base font-bold text-white">Anonimnost korisnika</h2>
-            <p className="text-sm text-slate-400 leading-relaxed">
-              Novčanik je dizajniran tako da ne znamo ko ste vi.
-            </p>
+            <p className="text-sm text-slate-400 leading-relaxed">Novčanik je dizajniran tako da ne znamo ko ste vi.</p>
             <ul className="text-sm text-slate-400 space-y-2 list-none pl-0">
               {[
                 'Email adresa nije verifikovana kao vaša lična adresa — možete koristiti bilo koji email.',
@@ -60,7 +58,7 @@ export function PrivacyPolicy() {
             <p className="text-sm text-slate-400 leading-relaxed">Prikupljamo samo podatke koje vi sami unesete:</p>
             <ul className="text-sm text-slate-400 space-y-2 list-none pl-0">
               {[
-                'Email adresa — koristi se isključivo za prijavu i tehničku komunikaciju.',
+                'Email adresa — koristi se isključivo za prijavu i tehničku komunikaciju (verifikacija naloga, resetovanje lozinke).',
                 'Lozinka — čuva se isključivo u hashovanom obliku (bcrypt); niko, uključujući administratora, ne može videti vašu lozinku.',
                 'Finansijski podaci — transakcije, budžet i podešavanja koje unesete.',
                 'Ime i prezime — opciono, prikazuje se samo vama unutar aplikacije.',
@@ -108,7 +106,7 @@ export function PrivacyPolicy() {
             <h2 className="text-base font-bold text-white">Bezbednost</h2>
             <ul className="text-sm text-slate-400 space-y-2 list-none pl-0">
               {[
-                'Lozinke su hashované (bcrypt) — niko ih ne može pročitati.',
+                'Lozinke su hashovane (bcrypt) — niko ih ne može pročitati.',
                 'Sav prenos podataka je enkriptovan (HTTPS).',
                 'Svaki korisnik vidi isključivo sopstvene podatke (RLS).',
                 'Invite kodovi se automatski brišu nakon 7 dana.',
@@ -124,7 +122,7 @@ export function PrivacyPolicy() {
           <section className="space-y-3">
             <h2 className="text-base font-bold text-white">Izmene politike</h2>
             <p className="text-sm text-slate-400 leading-relaxed">
-              O značajnim izmenama bićete obavešteni putem emaila. Nastavak korišćenja aplikacije znači prihvatanje izmena.
+              O značajnim izmenama bićete obavešteni putem emaila ili u aplikaciji. Nastavak korišćenja aplikacije znači prihvatanje izmena.
             </p>
           </section>
 
