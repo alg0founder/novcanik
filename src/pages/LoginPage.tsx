@@ -1,5 +1,5 @@
 import { useState, useEffect, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
 
 import { supabase } from '../lib/supabase'
@@ -281,13 +281,13 @@ export function LoginPage() {
                 />
                 <span className="text-xs text-slate-400 leading-relaxed">
                   Prihvatam{' '}
-                  <a href="/privacy-policy" className="text-orange-400 hover:text-orange-300 transition-colors">
+                  <Link to="/privacy-policy" className="text-orange-400 hover:text-orange-300 transition-colors">
                     Politiku privatnosti
-                  </a>
+                  </Link>
                   {' '}i{' '}
-                  <a href="/terms-of-service" className="text-orange-400 hover:text-orange-300 transition-colors">
+                  <Link to="/terms-of-service" className="text-orange-400 hover:text-orange-300 transition-colors">
                     Uslove korišćenja
-                  </a>
+                  </Link>
                 </span>
               </label>
             )}

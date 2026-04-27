@@ -8,7 +8,7 @@ export function PrivacyPolicy() {
     <div className="min-h-screen bg-[#111417] p-4 pb-12">
       <div className="max-w-2xl mx-auto">
         <button
-          onClick={() => window.history.length > 1 ? navigate(-1) : navigate('/login')}
+          onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-300 transition-colors mb-8 mt-4"
         >
           <ArrowLeft size={16} />
