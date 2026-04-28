@@ -1,6 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react'
 import { useNavigate, Link, useSearchParams } from 'react-router-dom'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Github } from 'lucide-react'
 
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
@@ -331,6 +331,18 @@ export function LoginPage() {
               </a>
             </p>
           )}
+        </div>
+
+        <div className="mt-5 text-center">
+          <a
+            href="https://github.com/radisakicos/novcanik"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-400 transition-colors"
+          >
+            <Github size={13} />
+            Aplikacija je open source — pogledaj kod
+          </a>
         </div>
       </div>
     </div>
