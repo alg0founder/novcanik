@@ -148,7 +148,7 @@ function CategoryFormModal({ category, type, onClose, onSaved }: CategoryFormMod
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full md:max-w-sm glass-card border border-white/10 rounded-t-2xl md:rounded-2xl shadow-2xl p-5 space-y-4">
+      <div className="relative w-full md:max-w-sm glass-card border border-white/10 rounded-t-2xl md:rounded-2xl shadow-2xl p-5 pb-24 md:pb-5 space-y-4 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-base font-semibold text-[#e1e2e7]">{category ? 'Izmeni kategoriju' : 'Nova kategorija'}</h2>
           <button type="button" onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-white/10 transition-colors"><X size={18} /></button>
