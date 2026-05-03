@@ -227,7 +227,7 @@ function SortableCategoryRow({ category, onEdit, onDelete }: { category: Categor
         {renderCategoryIcon(category.icon, 15, category.color ?? '#64748b')}
       </div>
       <span className="flex-1 text-sm font-medium text-slate-200">{category.name}</span>
-      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center gap-1 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
         <button type="button" onClick={onEdit} className="p-1.5 text-slate-500 hover:text-white transition-colors"><Pencil size={14} /></button>
         <button type="button" onClick={onDelete} className="p-1.5 text-slate-500 hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
       </div>
