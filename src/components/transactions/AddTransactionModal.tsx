@@ -86,7 +86,7 @@ function CategoryDropdown({ categories, value, onChange }: CategoryDropdownProps
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Pretraži kategorije..."
-                className="flex-1 bg-transparent text-sm text-[#e1e2e7] placeholder-slate-500 focus:outline-none"
+                className="flex-1 bg-transparent text-base sm:text-sm text-[#e1e2e7] placeholder-slate-500 focus:outline-none"
               />
             </div>
           </div>
