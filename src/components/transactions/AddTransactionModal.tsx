@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from 'react'
-import { X, ChevronDown, ChevronUp } from 'lucide-react'
+import { useState, useEffect, type FormEvent } from 'react'
+import { X, ChevronDown, ChevronUp, Search } from 'lucide-react'
 
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
@@ -35,7 +35,18 @@ interface CategoryDropdownProps {
 
 function CategoryDropdown({ categories, value, onChange }: CategoryDropdownProps) {
   const [open, setOpen] = useState(false)
+  const [search, setSearch] = useState('')
   const selected = categories.find(c => c.id === value)
+
+  useEffect(() => {
+    if (!open) setSearch('')
+  }, [open])
+
+  const filtered = search.trim()
+    ? categories.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
+    : categories
+
+  const showBezKategorije = !search.trim() || 'bez kategorije'.includes(search.toLowerCase())
 
   return (
     <div>
@@ -66,34 +77,53 @@ function CategoryDropdown({ categories, value, onChange }: CategoryDropdownProps
       </button>
 
       {open && (
-        <div className="mt-1 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-xl max-h-44 overflow-y-auto">
-          <button
-            type="button"
-            onClick={() => { onChange(''); setOpen(false) }}
-            className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm transition-colors hover:bg-slate-700 ${
-              !value ? 'text-orange-400 bg-orange-500/10' : 'text-slate-400'
-            }`}
-          >
-            Bez kategorije
-          </button>
-          {categories.map(c => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => { onChange(c.id); setOpen(false) }}
-              className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm transition-colors hover:bg-slate-700 ${
-                value === c.id ? 'text-orange-400 bg-orange-500/10' : 'text-[#e1e2e7]'
-              }`}
-            >
-              <div
-                className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center"
-                style={{ backgroundColor: (c.color ?? '#64748b') + '33' }}
+        <div className="mt-1 bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-xl">
+          <div className="px-3 py-2 border-b border-slate-700">
+            <div className="flex items-center gap-2 px-2 py-1.5 bg-slate-700/50 rounded-lg">
+              <Search size={13} className="text-slate-500 shrink-0" />
+              <input
+                type="text"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Pretraži kategorije..."
+                className="flex-1 bg-transparent text-sm text-[#e1e2e7] placeholder-slate-500 focus:outline-none"
+              />
+            </div>
+          </div>
+          <div className="max-h-44 overflow-y-auto">
+            {showBezKategorije && (
+              <button
+                type="button"
+                onClick={() => { onChange(''); setOpen(false) }}
+                className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm transition-colors hover:bg-slate-700 ${
+                  !value ? 'text-orange-400 bg-orange-500/10' : 'text-slate-400'
+                }`}
               >
-                {renderCategoryIcon(c.icon, 12, c.color ?? '#64748b')}
-              </div>
-              <span>{c.name}</span>
-            </button>
-          ))}
+                Bez kategorije
+              </button>
+            )}
+            {filtered.map(c => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => { onChange(c.id); setOpen(false) }}
+                className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm transition-colors hover:bg-slate-700 ${
+                  value === c.id ? 'text-orange-400 bg-orange-500/10' : 'text-[#e1e2e7]'
+                }`}
+              >
+                <div
+                  className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center"
+                  style={{ backgroundColor: (c.color ?? '#64748b') + '33' }}
+                >
+                  {renderCategoryIcon(c.icon, 12, c.color ?? '#64748b')}
+                </div>
+                <span>{c.name}</span>
+              </button>
+            ))}
+            {filtered.length === 0 && !showBezKategorije && (
+              <p className="px-3 py-3 text-sm text-slate-500 text-center">Nema rezultata</p>
+            )}
+          </div>
         </div>
       )}
     </div>
