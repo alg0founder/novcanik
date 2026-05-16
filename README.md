@@ -41,7 +41,7 @@ Ovo možete sami proveriti čitanjem [`schema.sql`](./schema.sql).
 ## Pokretanje lokalno
 
 ```bash
-git clone https://github.com/radisakicos/novcanik.git
+git clone https://github.com/alg0founder/novcanik.git
 cd novcanik
 npm install
 ```

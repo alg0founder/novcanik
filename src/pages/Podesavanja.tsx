@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Plus, Pencil, Trash2, X, GripVertical, Check, ChevronDown, ChevronUp, Lock, Mail, Coins, TrendingDown, TrendingUp, Smartphone, Share, Code2, Github, Zap, CircleDollarSign } from 'lucide-react'
+import { Plus, Pencil, Trash2, X, GripVertical, Check, ChevronDown, ChevronUp, Lock, Mail, Coins, TrendingDown, TrendingUp, Smartphone, Share, Code2, Github, Zap, CircleDollarSign, Eye, EyeOff } from 'lucide-react'
 import {
   DndContext, closestCenter, PointerSensor, TouchSensor,
   useSensor, useSensors, type DragEndEvent,
@@ -42,8 +42,12 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [showOld, setShowOld] = useState(false)
+  const [showNew, setShowNew] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
 
-  const inputCls = 'w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-[#e1e2e7] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all text-sm'
+  const inputCls = 'w-full pl-4 pr-10 py-3 bg-white/5 border border-white/10 rounded-xl text-[#e1e2e7] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all text-sm'
+  const eyeBtn = 'absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors'
 
   const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault()
@@ -86,15 +90,24 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Stara lozinka</label>
-              <input type="password" value={oldPassword} onChange={e => setOldPassword(e.target.value)} placeholder="••••••••" className={inputCls} />
+              <div className="relative">
+                <input type={showOld ? 'text' : 'password'} value={oldPassword} onChange={e => setOldPassword(e.target.value)} placeholder="••••••••" className={inputCls} />
+                <button type="button" onClick={() => setShowOld(v => !v)} className={eyeBtn}>{showOld ? <EyeOff size={15} /> : <Eye size={15} />}</button>
+              </div>
             </div>
             <div>
               <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nova lozinka</label>
-              <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="••••••••" className={inputCls} />
+              <div className="relative">
+                <input type={showNew ? 'text' : 'password'} value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="••••••••" className={inputCls} />
+                <button type="button" onClick={() => setShowNew(v => !v)} className={eyeBtn}>{showNew ? <EyeOff size={15} /> : <Eye size={15} />}</button>
+              </div>
             </div>
             <div>
               <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Potvrdi novu lozinku</label>
-              <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="••••••••" className={inputCls} />
+              <div className="relative">
+                <input type={showConfirm ? 'text' : 'password'} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="••••••••" className={inputCls} />
+                <button type="button" onClick={() => setShowConfirm(v => !v)} className={eyeBtn}>{showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}</button>
+              </div>
             </div>
             {error && <p className="text-sm text-red-400">{error}</p>}
             <div className="flex gap-3 pt-2">
@@ -252,6 +265,8 @@ export function Podesavanja() {
 
   const [editingName, setEditingName] = useState(false)
   const [nameInput, setNameInput] = useState('')
+  const [emailInput, setEmailInput] = useState('')
+  const [emailConfirmMsg, setEmailConfirmMsg] = useState<string | null>(null)
   const [savingName, setSavingName] = useState(false)
   const [showQR, setShowQR] = useState<'lightning' | 'usdt' | null>(null)
 
@@ -259,11 +274,17 @@ export function Podesavanja() {
   const incomeCategories = categories.filter(c => c.type === 'income')
   const expenseCategories = categories.filter(c => c.type === 'expense')
 
-  const handleSaveName = async (): Promise<void> => {
-    if (!nameInput.trim()) { setEditingName(false); return }
+  const handleSaveProfile = async (): Promise<void> => {
     setSavingName(true)
-    await supabase.from('settings').update({ full_name: nameInput.trim() }).eq('id', user!.id)
-    setFullName(nameInput.trim())
+    if (nameInput.trim()) {
+      await supabase.from('settings').update({ full_name: nameInput.trim() }).eq('id', user!.id)
+      setFullName(nameInput.trim())
+    }
+    const trimmedEmail = emailInput.trim()
+    if (trimmedEmail && trimmedEmail !== user?.email) {
+      const { error: emailErr } = await supabase.auth.updateUser({ email: trimmedEmail })
+      if (!emailErr) setEmailConfirmMsg('Poslat je email na novu adresu. Klikni link u emailu da potvrdiš promenu.')
+    }
     setSavingName(false)
     setEditingName(false)
   }
@@ -321,25 +342,37 @@ export function Podesavanja() {
             </div>
             <div className="flex-1 min-w-0">
               {editingName ? (
-                <div className="flex items-center gap-2">
+                <div className="space-y-2">
                   <input
                     autoFocus type="text" value={nameInput}
                     onChange={e => setNameInput(e.target.value)}
-                    onKeyDown={e => { if (e.key === 'Enter') void handleSaveName() }}
+                    onKeyDown={e => { if (e.key === 'Enter') void handleSaveProfile() }}
                     placeholder="Ime i prezime"
-                    className="flex-1 min-w-0 px-3 py-1.5 bg-white/5 border border-orange-500/50 rounded-lg text-white text-sm font-bold focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-white/5 border border-orange-500/50 rounded-lg text-white text-sm font-bold focus:outline-none"
                   />
-                  <button onClick={() => void handleSaveName()} disabled={savingName} className="p-1.5 text-green-400 hover:text-green-300 transition-colors shrink-0"><Check size={15} /></button>
-                  <button onClick={() => setEditingName(false)} className="p-1.5 text-slate-500 hover:text-slate-300 transition-colors shrink-0"><X size={15} /></button>
+                  <input
+                    type="email" value={emailInput}
+                    onChange={e => setEmailInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') void handleSaveProfile() }}
+                    placeholder="Email adresa"
+                    className="w-full px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-orange-500/50"
+                  />
+                  <div className="flex gap-2 pt-0.5">
+                    <button onClick={() => void handleSaveProfile()} disabled={savingName} className="p-1.5 text-green-400 hover:text-green-300 transition-colors"><Check size={15} /></button>
+                    <button onClick={() => setEditingName(false)} className="p-1.5 text-slate-500 hover:text-slate-300 transition-colors"><X size={15} /></button>
+                  </div>
                 </div>
               ) : (
-                <p className="text-base font-bold text-white truncate">{fullName ?? 'Dodaj ime i prezime'}</p>
+                <>
+                  <p className="text-base font-bold text-white truncate">{fullName ?? 'Dodaj ime i prezime'}</p>
+                  <p className="text-sm text-slate-400 mt-0.5 truncate">{user?.email}</p>
+                  {emailConfirmMsg && <p className="text-xs text-orange-400 mt-1">{emailConfirmMsg}</p>}
+                </>
               )}
-              <p className="text-sm text-slate-400 mt-0.5 truncate">{user?.email}</p>
             </div>
             {!editingName && (
               <button
-                onClick={() => { setNameInput(fullName ?? ''); setEditingName(true) }}
+                onClick={() => { setNameInput(fullName ?? ''); setEmailInput(user?.email ?? ''); setEmailConfirmMsg(null); setEditingName(true) }}
                 className="flex items-center gap-2 px-3 py-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-sm font-semibold text-white transition-all shrink-0"
               >
                 <Pencil size={14} />
