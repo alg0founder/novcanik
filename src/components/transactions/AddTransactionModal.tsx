@@ -2,6 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react'
 import { X, ChevronDown, ChevronUp, Search } from 'lucide-react'
 
 import { supabase } from '../../lib/supabase'
+import { getLastUsedTransactionDate, setLastUsedTransactionDate } from '../../lib/lastUsedTransactionDate'
 import { useAuth } from '../../context/AuthContext'
 import { useCategories } from '../../hooks/useCategories'
 import { renderCategoryIcon } from '../IconPicker'
@@ -138,7 +139,7 @@ export function AddTransactionModal({ onClose, onAdded, initialData }: AddTransa
   const [type, setType] = useState<'income' | 'expense'>(initialData?.type ?? 'expense')
   const [amount, setAmount] = useState(initialData ? String(initialData.amount) : '')
   const [categoryId, setCategoryId] = useState(initialData?.category_id ?? '')
-  const [date, setDate] = useState(initialData?.date ?? today)
+  const [date, setDate] = useState(initialData?.date ?? getLastUsedTransactionDate() ?? today)
   const [note, setNote] = useState(initialData?.note ?? '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -152,6 +153,11 @@ export function AddTransactionModal({ onClose, onAdded, initialData }: AddTransa
     const parsedAmount = parseFloat(amount.replace(',', '.'))
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
       setError('Iznos mora biti broj veći od 0.')
+      return
+    }
+
+    if (!categoryId) {
+      setError('Odaberi kategoriju.')
       return
     }
 
@@ -175,6 +181,7 @@ export function AddTransactionModal({ onClose, onAdded, initialData }: AddTransa
       return
     }
 
+    if (!isEdit) setLastUsedTransactionDate(date)
     onAdded()
     onClose()
   }
