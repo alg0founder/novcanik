@@ -9,7 +9,14 @@ import { formatAmount } from '../lib/formatAmount'
 
 const MONTHS_SR = ['Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun', 'Jul', 'Avgust', 'Septembar', 'Oktobar', 'Novembar', 'Decembar']
 const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Avg', 'Sep', 'Okt', 'Nov', 'Dec']
-const PAGE_SIZE = 10
+const PAGE_SIZES = [10, 20, 50] as const
+const STORAGE_KEY = 'novcanik-page-size'
+
+function readPageSize(): number {
+  const stored = localStorage.getItem(STORAGE_KEY)
+  const n = Number(stored)
+  return PAGE_SIZES.includes(n as typeof PAGE_SIZES[number]) ? n : 10
+}
 
 type Filter = 'all' | 'income' | 'expense'
 
@@ -28,6 +35,7 @@ export function Transakcije() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [filter, setFilter] = useState<Filter>('all')
   const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState<number>(readPageSize)
 
   const year = currentDate.getFullYear()
   const month = currentDate.getMonth() + 1
@@ -52,13 +60,20 @@ export function Transakcije() {
     return transactions
   }, [transactions, filter])
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
+  const paginated = filtered.slice((page - 1) * pageSize, page * pageSize)
+
+  const handlePageSizeChange = (size: number): void => {
+    localStorage.setItem(STORAGE_KEY, String(size))
+    setPageSize(size)
+    setPage(1)
+  }
 
   const totalIncome = useMemo(() => transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0), [transactions])
   const totalExpense = useMemo(() => transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0), [transactions])
 
   const handleFilterChange = (f: Filter): void => { setFilter(f); setPage(1) }
+
 
   const renderActions = (t: TransactionWithCategory) => confirmDeleteId === t.id ? (
     <div className="flex items-center gap-1.5">
@@ -222,10 +237,27 @@ export function Transakcije() {
             </div>
 
             {/* Pagination */}
-            <div className="px-6 py-4 border-t border-white/5 flex items-center justify-between">
-              <p className="text-xs text-slate-500">
-                Prikazano {Math.min((page - 1) * PAGE_SIZE + 1, filtered.length)}–{Math.min(page * PAGE_SIZE, filtered.length)} od {filtered.length}
-              </p>
+            <div className="px-4 py-4 border-t border-white/5 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <div className="flex bg-white/5 rounded-lg overflow-hidden border border-white/5">
+                  {PAGE_SIZES.map(size => (
+                    <button
+                      key={size}
+                      onClick={() => handlePageSizeChange(size)}
+                      className={`px-2.5 py-1.5 text-xs font-semibold transition-colors ${
+                        pageSize === size
+                          ? 'bg-orange-500 text-white'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-slate-500 hidden sm:block">
+                  Prikazano {Math.min((page - 1) * pageSize + 1, filtered.length)}–{Math.min(page * pageSize, filtered.length)} od {filtered.length}
+                </p>
+              </div>
               {totalPages > 1 && (
                 <div className="flex items-center gap-1.5">
                   <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="w-8 h-8 flex items-center justify-center rounded-full border border-white/10 text-slate-400 hover:bg-white/5 disabled:opacity-30 transition-all">
