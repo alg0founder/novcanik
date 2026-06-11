@@ -28,6 +28,7 @@ export function FixedCostsModal({ fixedCosts, currency, onAdd, onUpdate, onDelet
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editState, setEditState] = useState<EditState>({ name: '', amount: '', notes: '' })
   const [savingId, setSavingId] = useState<string | null>(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const handleAdd = async (e: FormEvent): Promise<void> => {
@@ -138,20 +139,23 @@ export function FixedCostsModal({ fixedCosts, currency, onAdd, onUpdate, onDelet
                         </p>
                       )}
                     </div>
-                    <div className="flex items-center gap-1 shrink-0 ml-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                      <button
-                        onClick={() => startEdit(c)}
-                        className="p-1.5 text-slate-500 hover:text-orange-400 transition-colors rounded-lg hover:bg-orange-500/10"
-                      >
-                        <Pencil size={13} />
-                      </button>
-                      <button
-                        onClick={() => void handleDelete(c.id)}
-                        disabled={deletingId === c.id}
-                        className="p-1.5 text-slate-500 hover:text-red-400 disabled:opacity-40 transition-colors rounded-lg hover:bg-red-500/10"
-                      >
-                        <Trash2 size={13} />
-                      </button>
+                    <div className="flex items-center gap-1 shrink-0 ml-2">
+                      {confirmDeleteId === c.id ? (
+                        <>
+                          <span className="text-[10px] text-slate-400 whitespace-nowrap">Obrisati?</span>
+                          <button onClick={() => void handleDelete(c.id)} disabled={deletingId === c.id} className="px-2 py-1 text-[10px] font-bold text-white bg-red-500 hover:bg-red-600 rounded-md transition-colors disabled:opacity-50">Da</button>
+                          <button onClick={() => setConfirmDeleteId(null)} className="px-2 py-1 text-[10px] font-bold text-slate-400 bg-white/5 hover:bg-white/10 rounded-md transition-colors">Ne</button>
+                        </>
+                      ) : (
+                        <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                          <button onClick={() => startEdit(c)} className="p-1.5 text-slate-500 hover:text-orange-400 transition-colors rounded-lg hover:bg-orange-500/10">
+                            <Pencil size={13} />
+                          </button>
+                          <button onClick={() => setConfirmDeleteId(c.id)} className="p-1.5 text-slate-500 hover:text-red-400 transition-colors rounded-lg hover:bg-red-500/10">
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
