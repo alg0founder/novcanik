@@ -30,13 +30,13 @@ interface TooltipPayload {
   payload: { color: string }
 }
 
-function CustomTooltip({ active, payload }: { active?: boolean; payload?: TooltipPayload[] }) {
+function CustomTooltip({ active, payload, currency }: { active?: boolean; payload?: TooltipPayload[]; currency: string }) {
   if (!active || !payload?.length) return null
   const item = payload[0]
   return (
     <div className="bg-[#191c1f] border border-[#554335] rounded-lg px-3 py-2 text-xs shadow-xl">
       <p className="text-[#e1e2e7] font-semibold mb-0.5">{item.name}</p>
-      <p style={{ color: item.payload.color }} className="font-bold">{formatAmount(item.value, 'RSD')}</p>
+      <p style={{ color: item.payload.color }} className="font-bold">{formatAmount(item.value, currency)}</p>
     </div>
   )
 }
@@ -78,7 +78,7 @@ export function CategoryPieChart({ title, data, currency, total, emptyText, type
                     <Cell key={i} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<CustomTooltip currency={currency} />} />
               </PieChart>
             </ResponsiveContainer>
             <p className="text-center text-[11px] text-[#a38d7b] font-bold -mt-1">
