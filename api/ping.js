@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
-  const response = await fetch(`${process.env.VITE_SUPABASE_URL}/rest/v1/settings?limit=1`, {
+  const response = await fetch(`${process.env.VITE_SUPABASE_URL}/rest/v1/invite_codes?limit=1`, {
     headers: {
       'apikey': process.env.VITE_SUPABASE_ANON_KEY,
       'Authorization': `Bearer ${process.env.VITE_SUPABASE_ANON_KEY}`,
