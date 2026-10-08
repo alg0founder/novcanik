@@ -1,156 +1,25 @@
-import { useState, useEffect, type ChangeEvent } from 'react'
-import { Pencil, Check, X, TrendingUp, Receipt } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Pencil, Check, X, TrendingUp } from 'lucide-react'
 
 import { useBudzet, type BudgetSettings, type ReservedByCategory } from '../hooks/useBudzet'
 import { FixedCostsModal } from '../components/budget/FixedCostsModal'
+import { BudgetCard } from '../components/budget/BudgetCard'
+import { BillsCard } from '../components/budget/BillsCard'
+import { AllocationBar } from '../components/budget/AllocationBar'
+import { getIncomeShares } from '../lib/budgetAllocation'
 import { useAuth } from '../hooks/useAuth'
 import { formatAmount } from '../lib/formatAmount'
 
 type SliderKey = 'spending_pct' | 'investing_pct' | 'giving_pct'
 type CostKey = keyof ReservedByCategory
 
+// Sliders split what remains after bills, so the 50/20/20/10 rule is expressed here
+// in that same base: 20/20/10 of income = 40/40/20 of the remaining 50%.
 const SLIDER_CATEGORIES: { key: SliderKey; costKey: CostKey; label: string; sub: string; recommended: number }[] = [
-  { key: 'spending_pct',  costKey: 'spending',  label: 'Trošenje',    sub: 'Hrana, zabava, hobiji, putovanja',        recommended: 20 },
-  { key: 'investing_pct', costKey: 'investing', label: 'Investiranje', sub: 'Bitcoin, akcije, nekretnine',             recommended: 20 },
-  { key: 'giving_pct',    costKey: 'giving',    label: 'Davanje',     sub: 'Donacije, pomoć porodici',                 recommended: 10 },
+  { key: 'spending_pct',  costKey: 'spending',  label: 'Trošenje',    sub: 'Hrana, zabava, hobiji, putovanja',        recommended: 40 },
+  { key: 'investing_pct', costKey: 'investing', label: 'Investiranje', sub: 'Bitcoin, akcije, nekretnine',             recommended: 40 },
+  { key: 'giving_pct',    costKey: 'giving',    label: 'Davanje',     sub: 'Donacije, pomoć porodici',                 recommended: 20 },
 ]
-
-interface CardProps {
-  label: string
-  sub: string
-  pct: number
-  recommended: number
-  remainingBudget: number
-  reserved: number
-  currency: string
-  onChange: (v: number) => void
-  onSave: () => void
-}
-
-function BudgetCard({ label, sub, pct, recommended, remainingBudget, reserved, currency, onChange, onSave }: CardProps) {
-  const amount = Math.round((pct / 100) * remainingBudget)
-  const free = amount - reserved
-  const isOverReserved = reserved > amount
-
-  return (
-    <div className="bg-[#111418] rounded-xl p-6 border border-white/5 relative overflow-hidden">
-      <div className="absolute -right-6 -top-6 w-28 h-28 bg-orange-500/5 rounded-full blur-2xl pointer-events-none" />
-      <div className="mb-6">
-        <h3 className="text-base font-bold text-white">{label}</h3>
-        <p className="text-xs text-slate-500 mt-0.5">{sub}</p>
-      </div>
-      <div className="flex justify-between items-end mb-5">
-        <div>
-          <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">TRENUTNO</p>
-          <p className="text-2xl font-bold text-white">
-            {pct}%{' '}
-            <span className="text-xs text-slate-400 font-medium ml-1">({formatAmount(amount, currency)})</span>
-          </p>
-        </div>
-        <div className="text-right">
-          <p className="text-[10px] text-orange-500/80 uppercase font-bold tracking-widest mb-1">PREPORUČENO</p>
-          <p className={`text-xl font-bold ${pct > recommended ? 'text-red-400' : 'text-orange-400'}`}>
-            {recommended}%
-          </p>
-        </div>
-      </div>
-      <div className="space-y-2">
-        <input
-          type="range"
-          min={0}
-          max={100}
-          value={pct}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(Number(e.target.value))}
-          onMouseUp={onSave}
-          onTouchEnd={onSave}
-          className="w-full h-1 rounded-full appearance-none cursor-pointer accent-orange-500"
-          style={{ background: `linear-gradient(to right, #f97316 ${pct}%, rgba(255,255,255,0.05) ${pct}%)` }}
-        />
-        <div className="flex justify-between text-[10px] text-slate-600 font-bold">
-          <span>0%</span>
-          <span className="text-orange-500/50">{recommended}%</span>
-          <span>100%</span>
-        </div>
-      </div>
-      {reserved > 0 && (
-        <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
-          <span className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">
-            Već rezervisano (fiksni troškovi)
-          </span>
-          <span className={`text-xs font-bold ${isOverReserved ? 'text-red-400' : 'text-slate-300'}`}>
-            −{formatAmount(reserved, currency)}
-          </span>
-        </div>
-      )}
-      {reserved > 0 && (
-        <div className="flex items-center justify-between mt-1">
-          <span className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Slobodno</span>
-          <span className={`text-xs font-bold ${isOverReserved ? 'text-red-400' : 'text-emerald-400'}`}>
-            {formatAmount(free, currency)}
-          </span>
-        </div>
-      )}
-    </div>
-  )
-}
-
-interface BillsCardProps {
-  billsCosts: number
-  monthlyIncome: number
-  currency: string
-  onEdit: () => void
-}
-
-function BillsCard({ billsCosts, monthlyIncome, currency, onEdit }: BillsCardProps) {
-  const pct = monthlyIncome > 0 ? Math.round((billsCosts / monthlyIncome) * 100) : 0
-  const isOver = pct > 50
-
-  return (
-    <div className="bg-[#111418] rounded-xl p-6 border border-white/5 relative overflow-hidden">
-      <div className="absolute -right-6 -top-6 w-28 h-28 bg-orange-500/5 rounded-full blur-2xl pointer-events-none" />
-      <div className="mb-6">
-        <h3 className="text-base font-bold text-white">Računi</h3>
-        <p className="text-xs text-slate-500 mt-0.5">Stanarina, struja, internet, osiguranje</p>
-      </div>
-      <div className="flex justify-between items-end mb-5">
-        <div>
-          <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">FIKSNI TROŠKOVI</p>
-          <p className="text-2xl font-bold text-white">
-            {pct}%{' '}
-            <span className="text-xs text-slate-400 font-medium ml-1">({formatAmount(Math.round(billsCosts), currency)})</span>
-          </p>
-        </div>
-        <div className="text-right">
-          <p className="text-[10px] text-orange-500/80 uppercase font-bold tracking-widest mb-1">PREPORUČENO</p>
-          <p className={`text-xl font-bold ${isOver ? 'text-red-400' : 'text-orange-400'}`}>50%</p>
-        </div>
-      </div>
-      <div className="space-y-2">
-        <div
-          className="w-full h-1 rounded-full overflow-hidden"
-          style={{ background: 'rgba(255,255,255,0.05)' }}
-        >
-          <div
-            className={`h-full rounded-full transition-all ${isOver ? 'bg-red-500' : 'bg-orange-500'}`}
-            style={{ width: `${Math.min(pct, 100)}%` }}
-          />
-        </div>
-        <div className="flex justify-between text-[10px] text-slate-600 font-bold">
-          <span>0%</span>
-          <span className="text-orange-500/50">50%</span>
-          <span>100%</span>
-        </div>
-      </div>
-      <button
-        onClick={onEdit}
-        className="mt-4 flex items-center gap-1.5 text-[10px] text-slate-500 hover:text-orange-400 font-bold uppercase tracking-wider transition-colors"
-      >
-        <Receipt size={11} />
-        Upravljaj fiksnim troškovima
-      </button>
-    </div>
-  )
-}
 
 export function Budzet() {
   const { currency, carryOverAffectsBudget } = useAuth()
@@ -177,6 +46,14 @@ export function Budzet() {
       })
     }
   }, [loading, settings])
+
+  const shares = getIncomeShares({
+    monthlyIncome,
+    billsCosts,
+    spendingPct: sliders.spending_pct,
+    investingPct: sliders.investing_pct,
+    givingPct: sliders.giving_pct,
+  })
 
   const handleSaveIncome = async (): Promise<void> => {
     setSaveError(null)
@@ -231,6 +108,12 @@ export function Budzet() {
             <span className="text-orange-400 font-bold">20%</span> → investiranje/štednja,{' '}
             <span className="text-orange-400 font-bold">10%</span> → davanje.
           </p>
+          <p className="text-xs text-slate-500 leading-relaxed mt-1">
+            Slajderi dele ono što ostane posle računa. Isto pravilo izraženo od ostatka:{' '}
+            <span className="text-orange-400 font-bold">40%</span> trošenje,{' '}
+            <span className="text-orange-400 font-bold">40%</span> investiranje,{' '}
+            <span className="text-orange-400 font-bold">20%</span> davanje.
+          </p>
         </div>
       </div>
 
@@ -282,7 +165,7 @@ export function Budzet() {
                         </button>
                       </div>
                     ) : transactionIncome === 0 ? (
-                      <p className="text-[10px] text-slate-600 mt-0.5">Nema prihoda ovaj mesec — unesi ručno</p>
+                      <p className="text-[10px] text-slate-600 mt-0.5">Nema prihoda ovaj mesec, unesi ručno</p>
                     ) : (
                       <p className="text-[10px] text-slate-500 mt-0.5">Iz transakcija ovog meseca</p>
                     )}
@@ -331,7 +214,7 @@ export function Budzet() {
                     {Math.round(remainingBudget).toLocaleString('de-DE')}
                   </span>
                   <span className="text-xs text-slate-400 ml-1.5">{currency}</span>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Prihod − fiksni troškovi</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Prihod − računi</p>
                 </div>
                 <div className="w-9 h-9 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
                   <TrendingUp size={14} />
@@ -340,10 +223,12 @@ export function Budzet() {
             </div>
           </div>
 
+          {shares && <AllocationBar shares={shares} monthlyIncome={monthlyIncome} currency={currency} />}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <BillsCard
               billsCosts={billsCosts}
-              monthlyIncome={monthlyIncome}
+              pct={shares?.bills ?? 0}
               currency={currency}
               onEdit={() => setShowCostsModal(true)}
             />
@@ -354,6 +239,7 @@ export function Budzet() {
                 sub={cat.sub}
                 pct={sliders[cat.key]}
                 recommended={cat.recommended}
+                incomeShare={shares ? shares[cat.costKey] : null}
                 remainingBudget={remainingBudget}
                 reserved={reservedByCategory[cat.costKey]}
                 currency={currency}
