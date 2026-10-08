@@ -83,18 +83,17 @@ export function LoginPage() {
         navigate('/')
       } else if (mode === 'signup') {
         // 1. Provjeri kod prije registracije
-        const { data: codeCheck } = await supabase
-          .from('invite_codes')
-          .select('used')
-          .eq('code', inviteCode.trim().toUpperCase())
-          .single()
+        // RPC instead of a table read, so the code list itself stays private
+        const { data: codeStatus, error: codeErr } = await supabase
+          .rpc('check_invite_code', { p_code: inviteCode.trim() })
+        if (codeErr) throw codeErr
 
-        if (!codeCheck) {
+        if (codeStatus === 'missing') {
           setError('Invite kod ne postoji.')
           setLoading(false)
           return
         }
-        if (codeCheck.used) {
+        if (codeStatus === 'used') {
           setError('Ovaj invite kod je već iskorišten.')
           setLoading(false)
           return
