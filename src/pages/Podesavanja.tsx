@@ -694,7 +694,7 @@ export function Podesavanja() {
             <div>
               <h4 className="text-lg font-bold text-white mb-1">Otvoreni kod i sigurnost</h4>
               <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
-                Naš kod je u potpunosti otvoren kako bi svi mogli da se uvere u sigurnost i privatnost podataka. Mi nemamo pristup vašim podacima, niti bilo ko drugi.
+                Naš kod je u potpunosti otvoren kako bi svi mogli da se uvere kako se podaci čuvaju. Svaki nalog vidi samo svoje podatke. Administrator baze ih tehnički može videti, ali ih ne koristi i ne deli.
               </p>
             </div>
           </div>
