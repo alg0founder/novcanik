@@ -90,14 +90,14 @@ export function LoginPage() {
         const { error: signUpErr } = await supabase.auth.signUp({ email, password, options: { captchaToken: captcha } })
         if (signUpErr) throw signUpErr
 
-        setInfo('Provjeri email i klikni link za potvrdu, pa se prijavi.')
+        setInfo('Proveri email i klikni na link za potvrdu, pa se prijavi.')
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`,
           captchaToken: captcha,
         })
         if (error) throw error
-        setInfo('Ako postoji nalog sa tim emailom, stigće ti link za resetovanje lozinke.')
+        setInfo('Ako postoji nalog sa tom email adresom, stići će ti link za promenu lozinke.')
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : ''

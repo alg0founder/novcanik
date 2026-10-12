@@ -131,7 +131,7 @@ export function useBudzet() {
       .from('fixed_costs')
       .update({ name, amount, notes, category })
       .eq('id', id)
-    if (e) return 'Greška pri izmjeni troška.'
+    if (e) return 'Greška pri izmeni troška.'
     setFixedCosts(prev => prev.map(c => c.id === id ? { ...c, name, amount, notes, category } : c))
     return null
   }
