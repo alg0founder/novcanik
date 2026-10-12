@@ -8,11 +8,14 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt': a new version waits until the user taps Osveži, so a reload never
+      // wipes a half-typed transaction. UpdatePrompt.tsx shows the banner.
+      registerType: 'prompt',
+      injectRegister: false,
       manifest: {
         name: 'Novčanik',
         short_name: 'Novčanik',
-        description: 'Besplatna aplikacija za praćenje ličnih finansija.',
+        description: 'Besplatna aplikacija za kućni budžet i praćenje troškova.',
         theme_color: '#f97316',
         background_color: '#111417',
         display: 'standalone',
