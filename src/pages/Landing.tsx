@@ -1,9 +1,9 @@
 import { Link, Navigate } from 'react-router-dom'
-import { Github, ArrowRight } from 'lucide-react'
+import { ArrowRight, Github } from 'lucide-react'
 
 import { useAuth } from '../hooks/useAuth'
-import { ProductPreview } from '../components/landing/ProductPreview'
-import { FeatureList } from '../components/landing/FeatureList'
+import { HeroPhones } from '../components/landing/HeroPhones'
+import { StoryScroll } from '../components/landing/StoryScroll'
 
 const REPO_URL = 'https://github.com/alg0founder/novcanik'
 
@@ -14,7 +14,7 @@ export function Landing() {
   if (!loading && session) return <Navigate to="/" replace />
 
   return (
-    <div className="min-h-screen bg-[#111417] text-[#e1e2e7] overflow-x-hidden">
+    <div className="min-h-screen bg-[#111417] text-[#e1e2e7] overflow-x-clip">
       <header className="max-w-6xl mx-auto px-5 md:px-8 py-6 flex items-center justify-between">
         <Link to="/pocetna" className="flex items-center gap-2.5">
           <img src="/icon-192.png" alt="" width={32} height={32} className="rounded-lg" />
@@ -26,75 +26,53 @@ export function Landing() {
       </header>
 
       <main>
-        <section className="max-w-6xl mx-auto px-5 md:px-8 pt-10 md:pt-20 pb-20 md:pb-28 grid md:grid-cols-[1.1fr_1fr] gap-14 md:gap-10 items-center">
-          <div>
-            <p className="animate-fade-up text-[11px] font-black text-orange-500 uppercase tracking-widest mb-4">
-              Besplatno · Bez reklama · Otvoren kod
-            </p>
-            <h1 className="animate-fade-up [animation-delay:80ms] font-display text-4xl md:text-6xl font-extrabold text-white leading-[1.05] mb-5">
-              Znaj gde ti odlazi novac.
-            </h1>
-            <p className="animate-fade-up [animation-delay:160ms] text-base md:text-lg text-slate-400 max-w-md leading-relaxed mb-8">
-              Upisuješ prihode i troškove, a Novčanik ti pokaže mesec, budžet i gde možeš da uštediš.
-            </p>
-            <div className="animate-fade-up [animation-delay:240ms] flex flex-wrap items-center gap-4">
-              <Link to="/login?tab=signup" className={primaryCta}>
-                Napravi nalog <ArrowRight size={16} />
-              </Link>
-              <Link to="/login" className="text-sm font-semibold text-slate-400 hover:text-white transition-colors px-2 py-3">
-                Već imam nalog
-              </Link>
-            </div>
-          </div>
-          <div className="animate-fade-up [animation-delay:320ms]">
-            <ProductPreview />
-          </div>
-        </section>
-
-        <section className="border-t border-white/5">
-          <div className="max-w-6xl mx-auto px-5 md:px-8 py-20 md:py-24">
-            <h2 className="font-display text-2xl md:text-3xl font-extrabold text-white mb-12 max-w-lg">
-              Sve što ti treba, ništa što ti ne treba.
-            </h2>
-            <FeatureList />
-          </div>
-        </section>
-
-        <section className="border-t border-white/5">
-          <div className="max-w-6xl mx-auto px-5 md:px-8 py-20 md:py-24 grid md:grid-cols-2 gap-10 items-center">
-            <div>
-              <h2 className="font-display text-2xl md:text-3xl font-extrabold text-white mb-4">
-                Kod je javan.
-              </h2>
-              <p className="text-sm md:text-base text-slate-400 leading-relaxed max-w-md">
-                Svako može da pogleda kako aplikacija radi i kako čuva podatke. Svaki nalog vidi samo svoje podatke.
-                Šta se tačno čuva i ko tehnički ima pristup piše u{' '}
-                <Link to="/privacy-policy" className="text-orange-400 hover:text-orange-300 underline-offset-2 hover:underline">
-                  politici privatnosti
-                </Link>.
-              </p>
-            </div>
-            <div className="md:justify-self-end">
-              <a
-                href={REPO_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 hover:bg-white/10 text-sm font-semibold text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
-              >
-                <Github size={16} /> Pogledaj kod na GitHub-u
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-t border-white/5">
-          <div className="max-w-6xl mx-auto px-5 md:px-8 py-20 md:py-28 text-center">
-            <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mb-8">
-              Počni od ovog meseca.
-            </h2>
+        <section className="px-5 md:px-8 pt-10 md:pt-16 text-center">
+          <p className="animate-fade-up text-[11px] font-black text-orange-500 uppercase tracking-widest mb-5">
+            Novčanik · lične finansije
+          </p>
+          <h1 className="animate-fade-up [animation-delay:80ms] font-display text-[2.6rem] leading-[1.05] md:text-7xl font-extrabold text-white max-w-4xl mx-auto mb-6">
+            Plata legne prvog.<br />
+            <span className="text-orange-500">Do dvadesetog je nema.</span>
+          </h1>
+          <p className="animate-fade-up [animation-delay:160ms] text-base md:text-lg text-slate-400 max-w-xl mx-auto leading-relaxed mb-8">
+            Novčanik ti pokaže gde je otišla. Trošak upišeš za par sekundi, ostalo sabere aplikacija.
+          </p>
+          <div className="animate-fade-up [animation-delay:240ms] flex flex-wrap justify-center items-center gap-4 mb-3">
             <Link to="/login?tab=signup" className={primaryCta}>
               Napravi nalog <ArrowRight size={16} />
             </Link>
+            <Link to="/login" className="text-sm font-semibold text-slate-400 hover:text-white transition-colors px-2 py-3">
+              Već imam nalog
+            </Link>
+          </div>
+          <p className="animate-fade-up [animation-delay:300ms] text-xs text-slate-500 mb-10">
+            Besplatno je i nema reklama. Radi u browseru i na telefonu.
+          </p>
+          <HeroPhones />
+        </section>
+
+        <section className="pb-10 md:pb-20">
+          <StoryScroll />
+        </section>
+
+        <section className="border-t border-white/5">
+          <div className="max-w-3xl mx-auto px-5 md:px-8 py-24 md:py-32 text-center">
+            <h2 className="font-display text-4xl md:text-6xl font-extrabold text-white mb-6">
+              Počni od ovog meseca.
+            </h2>
+            <p className="text-slate-400 leading-relaxed mb-10 max-w-lg mx-auto">
+              Besplatno je i nema reklama. Kod je javan na GitHub-u, a šta se čuva piše u{' '}
+              <Link to="/privacy-policy" className="text-orange-400 hover:text-orange-300 underline-offset-2 hover:underline">politici privatnosti</Link>.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link to="/login?tab=signup" className={primaryCta}>
+                Napravi nalog <ArrowRight size={16} />
+              </Link>
+              <a href={REPO_URL} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/5 hover:bg-white/10 text-sm font-semibold text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400">
+                <Github size={16} /> Kod na GitHub-u
+              </a>
+            </div>
           </div>
         </section>
       </main>
