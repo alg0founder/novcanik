@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { lazy, Suspense, type ReactNode } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 
 import { AuthProvider } from './context/AuthContext'
@@ -16,6 +16,8 @@ import { Transakcije } from './pages/Transakcije'
 import { Budzet } from './pages/Budzet'
 import { Izvestaji } from './pages/Izvestaji'
 import { Podesavanja } from './pages/Podesavanja'
+
+const Landing = lazy(() => import('./pages/Landing').then(m => ({ default: m.Landing })))
 
 function OnboardingGuard({ children }: { children: ReactNode }) {
   const { session, loading, onboardingCompleted } = useAuth()
@@ -39,6 +41,10 @@ export function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          <Route
+            path="/pocetna"
+            element={<Suspense fallback={<div className="min-h-screen bg-[#111417]" />}><Landing /></Suspense>}
+          />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />

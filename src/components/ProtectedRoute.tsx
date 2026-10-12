@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 
 import { useAuth } from '../hooks/useAuth'
 
@@ -9,6 +9,7 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { session, loading } = useAuth()
+  const { pathname } = useLocation()
 
   if (loading) {
     return (
@@ -18,7 +19,13 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     )
   }
 
-  if (!session) return <Navigate to="/login" replace />
+  if (!session) {
+    // A visitor opening the bare site sees what the app is; the installed app
+    // and deep links go straight to sign-in.
+    const isInstalledApp = window.matchMedia('(display-mode: standalone)').matches
+    const target = pathname === '/' && !isInstalledApp ? '/pocetna' : '/login'
+    return <Navigate to={target} replace />
+  }
 
   return <>{children}</>
 }
