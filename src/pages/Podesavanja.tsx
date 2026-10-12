@@ -17,6 +17,9 @@ import { ColorPicker } from '../components/ColorPicker'
 import { PRESET_COLORS } from '../lib/category.constants'
 import { IconPicker } from '../components/IconPicker'
 import { renderCategoryIcon } from '../lib/renderCategoryIcon'
+import { DeleteAccountModal } from '../components/settings/DeleteAccountModal'
+import { Captcha } from '../components/Captcha'
+import { isCaptchaEnabled } from '../lib/turnstile'
 import { Switch } from '../components/Switch'
 import type { Category } from '../types'
 
@@ -48,6 +51,8 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
   const [showOld, setShowOld] = useState(false)
   const [showNew, setShowNew] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const [captchaReset, setCaptchaReset] = useState(0)
 
   const inputCls = 'w-full pl-4 pr-10 py-3 bg-white/5 border border-white/10 rounded-xl text-[#e1e2e7] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all text-sm'
   const eyeBtn = 'absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors'
@@ -57,11 +62,14 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
     setError(null)
     if (newPassword.length < 8) { setError('Nova lozinka mora imati najmanje 8 karaktera.'); return }
     if (newPassword !== confirmPassword) { setError('Lozinke se ne poklapaju.'); return }
+    if (isCaptchaEnabled && !captchaToken) { setError('Sačekaj da se završi provera „nisam robot".'); return }
     setLoading(true)
     const { error: authErr } = await supabase.auth.signInWithPassword({
       email: user!.email!,
       password: oldPassword,
+      options: { captchaToken: captchaToken ?? undefined },
     })
+    setCaptchaReset(n => n + 1)
     if (authErr) { setError('Stara lozinka nije ispravna.'); setLoading(false); return }
     const { error: updateErr } = await supabase.auth.updateUser({ password: newPassword })
     if (updateErr) { setError('Greška pri promeni lozinke.'); setLoading(false); return }
@@ -112,6 +120,7 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
                 <button type="button" onClick={() => setShowConfirm(v => !v)} className={eyeBtn}>{showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}</button>
               </div>
             </div>
+            <Captcha onToken={setCaptchaToken} resetSignal={captchaReset} />
             {error && <p className="text-sm text-red-400">{error}</p>}
             <div className="flex gap-3 pt-2">
               <button type="button" onClick={onClose} className="flex-1 py-2.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 text-sm font-semibold transition-all">Otkaži</button>
@@ -272,6 +281,7 @@ export function Podesavanja() {
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(null)
   const [txCount, setTxCount] = useState(0)
   const [showPasswordModal, setShowPasswordModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const [editingName, setEditingName] = useState(false)
   const [nameInput, setNameInput] = useState('')
@@ -461,6 +471,19 @@ export function Podesavanja() {
                 </div>
               </div>
               <ChevronDown size={16} className="text-slate-600 group-hover:text-slate-400 -rotate-90 transition-colors" />
+            </button>
+            <button onClick={() => setShowDeleteModal(true)}
+              className="w-full flex items-center justify-between p-4 hover:bg-red-500/5 rounded-xl transition-colors group">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center text-red-400 shrink-0">
+                  <Trash2 size={18} />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-bold text-red-400">Obriši nalog</p>
+                  <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mt-0.5">Trajno, sa svim podacima</p>
+                </div>
+              </div>
+              <ChevronDown size={16} className="text-slate-600 group-hover:text-red-400 -rotate-90 transition-colors" />
             </button>
           </div>
         </section>
@@ -773,6 +796,9 @@ export function Podesavanja() {
       )}
 
       {showPasswordModal && <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />}
+      {showDeleteModal && user?.email && (
+        <DeleteAccountModal email={user.email} onClose={() => setShowDeleteModal(false)} />
+      )}
       {addModalType && <CategoryFormModal category={null} type={addModalType} onClose={() => setAddModalType(null)} onSaved={refetch} />}
       {editingCategory && <CategoryFormModal category={editingCategory} type={editingCategory.type} onClose={() => setEditingCategory(null)} onSaved={refetch} />}
       {deletingCategory && <DeleteModal category={deletingCategory} txCount={txCount} onClose={() => setDeletingCategory(null)} onConfirm={handleDeleteConfirm} onRename={() => { setEditingCategory(deletingCategory); setDeletingCategory(null) }} />}

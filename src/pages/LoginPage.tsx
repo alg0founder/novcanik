@@ -4,6 +4,8 @@ import { Eye, EyeOff, Github } from 'lucide-react'
 
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
+import { Captcha } from '../components/Captcha'
+import { isCaptchaEnabled } from '../lib/turnstile'
 
 type AuthMode = 'login' | 'signup' | 'forgot'
 
@@ -37,6 +39,8 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const [captchaReset, setCaptchaReset] = useState(0)
 
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -44,6 +48,7 @@ export function LoginPage() {
 
   useEffect(() => {
     if (searchParams.get('tab') === 'signup') setMode('signup')
+    if (searchParams.get('deleted') === '1') setInfo('Nalog i svi podaci su trajno obrisani.')
   }, [searchParams])
 
   useEffect(() => {
@@ -74,11 +79,17 @@ export function LoginPage() {
       return
     }
 
+    if (isCaptchaEnabled && !captchaToken) {
+      setError('Sačekaj da se završi provera „nisam robot".')
+      return
+    }
+    const captcha = captchaToken ?? undefined
+
     setLoading(true)
 
     try {
       if (mode === 'login') {
-        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        const { error } = await supabase.auth.signInWithPassword({ email, password, options: { captchaToken: captcha } })
         if (error) throw error
         navigate('/')
       } else if (mode === 'signup') {
@@ -100,7 +111,7 @@ export function LoginPage() {
         }
 
         // 2. Registruj korisnika
-        const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({ email, password })
+        const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({ email, password, options: { captchaToken: captcha } })
         if (signUpErr) throw signUpErr
 
         // 3. Atomično zauzmi kod
@@ -115,13 +126,16 @@ export function LoginPage() {
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`,
+          captchaToken: captcha,
         })
         if (error) throw error
         setInfo('Ako postoji nalog sa tim emailom, stigće ti link za resetovanje lozinke.')
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : ''
-      if (msg.toLowerCase().includes('email not confirmed')) {
+      if (msg.toLowerCase().includes('captcha')) {
+        setError('Provera „nisam robot" nije uspela. Pokušaj ponovo.')
+      } else if (msg.toLowerCase().includes('email not confirmed')) {
         setError('Email adresa nije potvrđena. Proveri inbox i klikni link koji smo ti poslali.')
       } else if (msg.toLowerCase().includes('invalid login credentials')) {
         setError('Pogrešan email ili lozinka.')
@@ -136,6 +150,7 @@ export function LoginPage() {
       }
     } finally {
       setLoading(false)
+      setCaptchaReset(n => n + 1)
     }
   }
 
@@ -295,6 +310,8 @@ export function LoginPage() {
                 </span>
               </label>
             )}
+
+            <Captcha onToken={setCaptchaToken} resetSignal={captchaReset} />
 
             {error && (
               <p role="alert" className="text-sm text-red-400">{error}</p>
