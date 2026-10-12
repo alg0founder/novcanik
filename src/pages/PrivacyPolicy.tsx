@@ -47,7 +47,7 @@ export function PrivacyPolicy() {
 
           <section className="space-y-3">
             <h2 className="text-base font-bold text-white">Koje podatke prikupljamo</h2>
-            <p className="text-sm text-slate-400 leading-relaxed">Prikupljamo samo podatke koje vi sami unesete:</p>
+            <p className="text-sm text-slate-400 leading-relaxed">Prikupljamo podatke koje vi sami unesete:</p>
             <ul className="text-sm text-slate-400 space-y-2 list-none pl-0">
               {[
                 'Email adresa: koristi se isključivo za prijavu i tehničku komunikaciju (potvrda naloga, promena lozinke).',
