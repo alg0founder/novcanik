@@ -1,19 +1,39 @@
+import { useRef } from 'react'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { RefreshCw, X } from 'lucide-react'
 
 const UPDATE_CHECK_MS = 60 * 60 * 1000
+const RELOAD_FALLBACK_MS = 1500
 
 /** Banner shown when a new version of the app has been downloaded and is waiting. */
 export function UpdatePrompt() {
+  const registrationRef = useRef<ServiceWorkerRegistration | null>(null)
   const {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
   } = useRegisterSW({
     onRegisteredSW(_url, registration) {
+      registrationRef.current = registration ?? null
       // An installed app can stay open for days; look for a new version every hour.
       if (registration) setInterval(() => { void registration.update() }, UPDATE_CHECK_MS)
     },
   })
+
+  // The library's own reload waits for a 'controlling' event that does not always
+  // fire, so the button looked dead. Activate the waiting worker directly and
+  // reload as soon as it takes over, or after a short fallback delay.
+  const handleRefresh = (): void => {
+    let isReloading = false
+    const reload = (): void => {
+      if (isReloading) return
+      isReloading = true
+      window.location.reload()
+    }
+    navigator.serviceWorker.addEventListener('controllerchange', reload, { once: true })
+    registrationRef.current?.waiting?.postMessage({ type: 'SKIP_WAITING' })
+    void updateServiceWorker(true)
+    window.setTimeout(reload, RELOAD_FALLBACK_MS)
+  }
 
   if (!needRefresh) return null
 
@@ -22,7 +42,7 @@ export function UpdatePrompt() {
       <RefreshCw size={18} className="text-orange-400 shrink-0" />
       <p className="flex-1 text-sm text-[#e1e2e7]">Nova verzija je dostupna.</p>
       <button
-        onClick={() => void updateServiceWorker(true)}
+        onClick={handleRefresh}
         className="bg-orange-500 hover:bg-orange-600 text-[#2d1600] text-sm font-bold px-4 py-1.5 rounded-full transition-colors"
       >
         Osveži
