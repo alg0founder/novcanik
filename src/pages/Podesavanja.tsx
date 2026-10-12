@@ -729,7 +729,7 @@ export function Podesavanja() {
             </div>
           </div>
           <a
-            href="https://github.com/radisakicos/novcanik"
+            href="https://github.com/alg0founder/novcanik"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2.5 whitespace-nowrap bg-white/10 hover:bg-white/15 border border-white/10 text-white px-6 py-3 rounded-full font-bold text-sm transition-all active:scale-95 shrink-0"

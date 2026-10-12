@@ -290,7 +290,7 @@ export function LoginPage() {
 
         <div className="mt-5 text-center">
           <a
-            href="https://github.com/radisakicos/novcanik"
+            href="https://github.com/alg0founder/novcanik"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-400 transition-colors"
