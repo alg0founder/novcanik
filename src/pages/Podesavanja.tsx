@@ -70,7 +70,13 @@ function ChangePasswordModal({ onClose }: { onClose: () => void }) {
       options: { captchaToken: captchaToken ?? undefined },
     })
     setCaptchaReset(n => n + 1)
-    if (authErr) { setError('Stara lozinka nije ispravna.'); setLoading(false); return }
+    if (authErr) {
+      setError(authErr.message.toLowerCase().includes('captcha')
+        ? 'Provera „nisam robot" nije uspela. Pokušaj ponovo.'
+        : 'Stara lozinka nije ispravna.')
+      setLoading(false)
+      return
+    }
     const { error: updateErr } = await supabase.auth.updateUser({ password: newPassword })
     if (updateErr) { setError('Greška pri promeni lozinke.'); setLoading(false); return }
     setSuccess(true)
@@ -186,7 +192,7 @@ function CategoryFormModal({ category, type, onClose, onSaved }: CategoryFormMod
             </button>
             <div className="flex-1">
               <label htmlFor="cat-name" className="block text-sm font-medium text-slate-300 mb-1.5">Naziv</label>
-              <input id="cat-name" type="text" required value={name} onChange={e => setName(e.target.value)} placeholder="Naziv kategorije"
+              <input id="cat-name" type="text" required value={name} onChange={e => setName(e.target.value)} maxLength={100} placeholder="Naziv kategorije"
                 className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-xl text-sm text-[#e1e2e7] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all" />
             </div>
             <button type="button" onClick={() => { setShowColor(v => !v); setShowIcon(false) }}
@@ -417,6 +423,7 @@ export function Podesavanja() {
                   <input
                     autoFocus type="text" value={nameInput}
                     onChange={e => setNameInput(e.target.value)}
+                    maxLength={100}
                     onKeyDown={e => { if (e.key === 'Enter') void handleSaveProfile() }}
                     placeholder="Ime i prezime"
                     className="w-full px-3 py-1.5 bg-white/5 border border-orange-500/50 rounded-lg text-white text-sm font-bold focus:outline-none"

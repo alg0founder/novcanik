@@ -236,6 +236,7 @@ export function FixedCostsModal({ fixedCosts, currency, onAdd, onUpdate, onDelet
             placeholder="Ime računa (npr. Stanarina)"
             value={name}
             onChange={e => setName(e.target.value)}
+            maxLength={100}
             className={inputCls}
           />
           <div className="relative">
@@ -254,6 +255,7 @@ export function FixedCostsModal({ fixedCosts, currency, onAdd, onUpdate, onDelet
             placeholder="Beleška (opciono)"
             value={notes}
             onChange={e => setNotes(e.target.value)}
+            maxLength={500}
             className={inputCls}
           />
           <CategoryPicker value={category} onChange={setCategory} />

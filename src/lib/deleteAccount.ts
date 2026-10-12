@@ -13,7 +13,11 @@ export async function deleteAccount(
   email: string, password: string, captchaToken: string | undefined,
 ): Promise<string | null> {
   const { error: authErr } = await supabase.auth.signInWithPassword({ email, password, options: { captchaToken } })
-  if (authErr) return 'Lozinka nije ispravna.'
+  if (authErr) {
+    return authErr.message.toLowerCase().includes('captcha')
+      ? 'Provera „nisam robot" nije uspela. Pokušaj ponovo.'
+      : 'Lozinka nije ispravna.'
+  }
 
   const { error: deleteErr } = await supabase.rpc('delete_own_account')
   if (deleteErr) return 'Greška pri brisanju naloga. Pokušaj ponovo.'

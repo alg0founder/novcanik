@@ -28,7 +28,7 @@ export function Captcha({ onToken, resetSignal }: CaptchaProps) {
         widgetIdRef.current = api.render(containerRef.current, {
           sitekey: TURNSTILE_SITE_KEY,
           theme: 'dark',
-          language: 'sr',
+          language: 'auto',
           callback: token => onTokenRef.current(token),
           'expired-callback': () => onTokenRef.current(null),
           'error-callback': () => onTokenRef.current(null),

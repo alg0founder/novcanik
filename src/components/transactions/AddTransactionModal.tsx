@@ -266,6 +266,7 @@ export function AddTransactionModal({ onClose, onAdded, initialData }: AddTransa
               placeholder="Kratka napomena..."
               value={note}
               onChange={e => setNote(e.target.value)}
+              maxLength={500}
               className={inputClass}
             />
           </div>
