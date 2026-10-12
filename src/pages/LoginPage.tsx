@@ -33,7 +33,6 @@ export function LoginPage() {
   const [mode, setMode] = useState<AuthMode>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [inviteCode, setInviteCode] = useState('')
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -69,11 +68,6 @@ export function LoginPage() {
       return
     }
 
-    if (mode === 'signup' && !inviteCode.trim()) {
-      setError('Invite kod je obavezan za registraciju.')
-      return
-    }
-
     if (mode === 'signup' && !agreedToTerms) {
       setError('Morate prihvatiti Politiku privatnosti i Uslove korišćenja.')
       return
@@ -93,34 +87,8 @@ export function LoginPage() {
         if (error) throw error
         navigate('/')
       } else if (mode === 'signup') {
-        // 1. Provjeri kod prije registracije
-        // RPC instead of a table read, so the code list itself stays private
-        const { data: codeStatus, error: codeErr } = await supabase
-          .rpc('check_invite_code', { p_code: inviteCode.trim() })
-        if (codeErr) throw codeErr
-
-        if (codeStatus === 'missing') {
-          setError('Invite kod ne postoji.')
-          setLoading(false)
-          return
-        }
-        if (codeStatus === 'used') {
-          setError('Ovaj invite kod je već iskorišten.')
-          setLoading(false)
-          return
-        }
-
-        // 2. Registruj korisnika
-        const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({ email, password, options: { captchaToken: captcha } })
+        const { error: signUpErr } = await supabase.auth.signUp({ email, password, options: { captchaToken: captcha } })
         if (signUpErr) throw signUpErr
-
-        // 3. Atomično zauzmi kod
-        if (signUpData.user) {
-          await supabase.rpc('claim_invite_code', {
-            p_code: inviteCode.trim(),
-            p_user_id: signUpData.user.id,
-          })
-        }
 
         setInfo('Provjeri email i klikni link za potvrdu, pa se prijavi.')
       } else {
@@ -273,24 +241,6 @@ export function LoginPage() {
             )}
 
             {mode === 'signup' && (
-              <div>
-                <label htmlFor="invite" className="block text-sm font-medium text-slate-300 mb-1.5">
-                  Invite kod
-                </label>
-                <input
-                  id="invite"
-                  type="text"
-                  required
-                  value={inviteCode}
-                  onChange={e => setInviteCode(e.target.value.toUpperCase())}
-                  className="w-full px-3 py-2.5 border border-slate-700 rounded-lg bg-slate-800/50 text-[#e1e2e7] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all font-mono tracking-widest"
-                  placeholder=""
-                />
-                <p className="text-[11px] text-slate-600 mt-1">Kod dobijate od administratora.</p>
-              </div>
-            )}
-
-            {mode === 'signup' && (
               <label className="flex items-start gap-3 cursor-pointer">
                 <input
                   type="checkbox"
@@ -336,17 +286,6 @@ export function LoginPage() {
             </button>
           </form>
 
-          {mode === 'signup' && (
-            <p className="text-center text-xs text-slate-500 mt-4">
-              Nemate invite kod?{' '}
-              <a
-                href="mailto:algo_founder@proton.me?subject=Novčanik - Zahtev za pristup"
-                className="text-orange-400 hover:text-orange-300 transition-colors font-medium"
-              >
-                Javite se administratoru
-              </a>
-            </p>
-          )}
         </div>
 
         <div className="mt-5 text-center">
