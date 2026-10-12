@@ -4,23 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <title>Novčanik · Pratite svoje finansije jednostavno</title>
-    <meta name="description" content="Novčanik je besplatna aplikacija za praćenje ličnih finansija. Pratite prihode, rashode i budžet na jednom mestu." />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <title>Novčanik · Besplatna aplikacija za kućni budžet i praćenje troškova</title>
+    <meta name="description" content="Besplatna aplikacija za kućni budžet i praćenje troškova. Upisuješ prihode i troškove, a Novčanik pokaže stanje meseca, budžet po pravilu 50/20/20/10 i gde odlazi novac." />
+    <link rel="canonical" href="https://novcanik.vercel.app/" />
     <meta name="theme-color" content="#f97316" />
+    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://novcanik.vercel.app" />
-    <meta property="og:title" content="Novčanik · Pratite svoje finansije jednostavno" />
-    <meta property="og:description" content="Besplatna aplikacija za praćenje ličnih finansija. Pratite prihode, rashode i budžet na jednom mestu." />
+    <meta property="og:site_name" content="Novčanik" />
+    <meta property="og:locale" content="sr_RS" />
+    <meta property="og:url" content="https://novcanik.vercel.app/" />
+    <meta property="og:title" content="Plata legne prvog. Do dvadesetog je nema." />
+    <meta property="og:description" content="Novčanik ti pokaže gde je otišla. Besplatna aplikacija za kućni budžet i praćenje troškova." />
+    <meta property="og:image" content="https://novcanik.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Novčanik na telefonu: stanje meseca, prihodi, rashodi i poslednje transakcije" />
 
     <!-- Twitter -->
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Novčanik · Pratite svoje finansije jednostavno" />
-    <meta name="twitter:description" content="Besplatna aplikacija za praćenje ličnih finansija." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Plata legne prvog. Do dvadesetog je nema." />
+    <meta name="twitter:description" content="Novčanik ti pokaže gde je otišla. Besplatna aplikacija za kućni budžet i praćenje troškova." />
+    <meta name="twitter:image" content="https://novcanik.vercel.app/og-image.png" />
+
+    <!-- Structured data; the FAQ mirrors src/components/landing/faq.ts -->
+    <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Novčanik", "applicationCategory": "FinanceApplication", "operatingSystem": "Web, Android, iOS", "inLanguage": "sr", "url": "https://novcanik.vercel.app/", "description": "Besplatna aplikacija za kućni budžet i praćenje troškova: prihodi, rashodi, budžet po pravilu 50/20/20/10 i izveštaji po kategorijama.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "RSD"}}, {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Da li je Novčanik besplatan?", "acceptedAnswer": {"@type": "Answer", "text": "Jeste. Nema reklama ni plaćenih paketa."}}, {"@type": "Question", "name": "Da li moram nešto da instaliram?", "acceptedAnswer": {"@type": "Answer", "text": "Ne. Novčanik radi u browseru na telefonu i računaru. Na telefonu ga možeš dodati na početni ekran i otvarati kao aplikaciju."}}, {"@type": "Question", "name": "Da li se povezuje sa mojom bankom?", "acceptedAnswer": {"@type": "Answer", "text": "Ne. Prihode i troškove upisuješ sam, a aplikacija nema nikakav pristup tvom računu u banci."}}, {"@type": "Question", "name": "Ko vidi moje podatke?", "acceptedAnswer": {"@type": "Answer", "text": "Kroz aplikaciju samo tvoj nalog. Administrator baze tehnički ima pristup, ali podatke ne pregleda, ne koristi i ne deli. Detalji su u politici privatnosti."}}, {"@type": "Question", "name": "Mogu li da obrišem nalog?", "acceptedAnswer": {"@type": "Answer", "text": "Možeš, u Podešavanjima. Nalog i svi podaci se brišu odmah i trajno."}}, {"@type": "Question", "name": "U kojoj valuti vodim troškove?", "acceptedAnswer": {"@type": "Answer", "text": "U dinarima, evrima ili dolarima, po izboru u Podešavanjima."}}]}]</script>
   </head>
   <body>
     <div id="root"></div>

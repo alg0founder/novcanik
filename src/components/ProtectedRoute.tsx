@@ -5,9 +5,11 @@ import { useAuth } from '../hooks/useAuth'
 
 interface ProtectedRouteProps {
   children: ReactNode
+  /** Shown instead of the sign-in redirect to a signed-out visitor on the bare site. */
+  guestHome?: ReactNode
 }
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
+export function ProtectedRoute({ children, guestHome }: ProtectedRouteProps) {
   const { session, loading } = useAuth()
   const { pathname } = useLocation()
 
@@ -20,11 +22,12 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!session) {
-    // A visitor opening the bare site sees what the app is; the installed app
-    // and deep links go straight to sign-in.
+    // A visitor on the bare site gets the start page at "/" itself (no redirect,
+    // so search engines index the real content); the installed app and deep
+    // links go straight to sign-in.
     const isInstalledApp = window.matchMedia('(display-mode: standalone)').matches
-    const target = pathname === '/' && !isInstalledApp ? '/pocetna' : '/login'
-    return <Navigate to={target} replace />
+    if (guestHome && pathname === '/' && !isInstalledApp) return <>{guestHome}</>
+    return <Navigate to="/login" replace />
   }
 
   return <>{children}</>

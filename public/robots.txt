@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /transakcije
+Disallow: /budzet
+Disallow: /izvestaji
+Disallow: /podesavanja
+Disallow: /reset-password
+Disallow: /onboarding
+
+Sitemap: https://novcanik.vercel.app/sitemap.xml

@@ -4,6 +4,7 @@ import { ArrowRight, Github } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { HeroPhones } from '../components/landing/HeroPhones'
 import { StoryScroll } from '../components/landing/StoryScroll'
+import { FaqSection } from '../components/landing/FaqSection'
 
 const REPO_URL = 'https://github.com/alg0founder/novcanik'
 
@@ -16,7 +17,7 @@ export function Landing() {
   return (
     <div className="min-h-screen bg-[#111417] text-[#e1e2e7] overflow-x-clip">
       <header className="max-w-6xl mx-auto px-5 md:px-8 py-6 flex items-center justify-between">
-        <Link to="/pocetna" className="flex items-center gap-2.5">
+        <Link to="/" className="flex items-center gap-2.5">
           <img src="/icon-192.png" alt="" width={32} height={32} className="rounded-lg" />
           <span className="font-display text-lg font-extrabold text-white">Novčanik</span>
         </Link>
@@ -54,6 +55,8 @@ export function Landing() {
         <section className="pb-10 md:pb-20">
           <StoryScroll />
         </section>
+
+        <FaqSection />
 
         <section className="border-t border-white/5">
           <div className="max-w-3xl mx-auto px-5 md:px-8 py-24 md:py-32 text-center">

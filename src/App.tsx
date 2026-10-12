@@ -5,6 +5,8 @@ import { AuthProvider } from './context/AuthContext'
 import { useAuth } from './hooks/useAuth'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { AppShell } from './components/layout/AppShell'
+import { RouteTitle } from './components/RouteTitle'
+import { UpdatePrompt } from './components/UpdatePrompt'
 
 import { LoginPage } from './pages/LoginPage'
 import { ResetPasswordPage } from './pages/ResetPasswordPage'
@@ -40,11 +42,10 @@ export function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <RouteTitle />
+        <UpdatePrompt />
         <Routes>
-          <Route
-            path="/pocetna"
-            element={<Suspense fallback={<div className="min-h-screen bg-[#111417]" />}><Landing /></Suspense>}
-          />
+          <Route path="/pocetna" element={<Navigate to="/" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -62,7 +63,7 @@ export function App() {
           <Route
             path="/"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute guestHome={<Suspense fallback={<div className="min-h-screen bg-[#111417]" />}><Landing /></Suspense>}>
                 <AppShell />
               </ProtectedRoute>
             }
