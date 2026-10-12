@@ -20,6 +20,17 @@ begin
   if auth.uid() is null then
     raise exception 'not authenticated';
   end if;
+  -- Require a password sign-in within the last 5 minutes. A stolen token
+  -- alone is not enough: refreshing a session keeps the original amr
+  -- timestamp, so only re-entering the password passes this check.
+  if not exists (
+    select 1
+    from jsonb_array_elements(coalesce(auth.jwt() -> 'amr', '[]'::jsonb)) as m
+    where m ->> 'method' = 'password'
+      and (m ->> 'timestamp')::bigint > extract(epoch from now())::bigint - 300
+  ) then
+    raise exception 'reauthentication required';
+  end if;
   delete from auth.users where id = auth.uid();
 end;
 $$;
