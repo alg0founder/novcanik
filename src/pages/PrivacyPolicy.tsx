@@ -19,7 +19,7 @@ export function PrivacyPolicy() {
         <div className="max-w-none space-y-6">
           <div>
             <h1 className="text-2xl font-bold text-white mb-1">Politika privatnosti</h1>
-            <p className="text-xs text-slate-500">Poslednje ažuriranje: april 2026.</p>
+            <p className="text-xs text-slate-500">Poslednje ažuriranje: oktobar 2026.</p>
           </div>
 
           <section className="space-y-3">
@@ -34,23 +34,14 @@ export function PrivacyPolicy() {
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-base font-bold text-white">Anonimnost korisnika</h2>
-            <p className="text-sm text-slate-400 leading-relaxed">Novčanik je dizajniran tako da ne znamo ko ste vi.</p>
-            <ul className="text-sm text-slate-400 space-y-2 list-none pl-0">
-              {[
-                'Email adresa nije verifikovana kao vaša lična adresa — možete koristiti bilo koji email.',
-                'Ime i prezime nisu obavezni i ne proveravamo njihovu tačnost.',
-                'Invite kodovi se automatski generišu kao nasumični nizovi karaktera i brišu se nakon 7 dana — ne postoji zapis o tome kome je koji kod dodeljen.',
-                'U bazi podataka vaš nalog postoji samo kao nasumični tehnički identifikator (UUID).',
-              ].map((item, i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="text-orange-500 shrink-0">—</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            <h2 className="text-base font-bold text-white">Šta znamo o vama</h2>
             <p className="text-sm text-slate-400 leading-relaxed">
-              Rezultat je da nemamo mogućnost da povežemo vaše podatke u aplikaciji sa vašim stvarnim identitetom.
+              Za nalog je potrebna email adresa. Možete koristiti bilo koju email adresu, ne mora biti vezana za vaše ime.
+              Proveravamo samo da adresa radi (na nju stiže link za potvrdu), ne i ko je njen vlasnik. Ako koristite
+              adresu iz koje se ne vidi ko ste, nemamo način da to saznamo.
+            </p>
+            <p className="text-sm text-slate-400 leading-relaxed">
+              Ime i prezime nisu obavezni. Vaši podaci u bazi vezani su za vaš nalog. Druge lične podatke ne tražimo.
             </p>
           </section>
 
@@ -59,13 +50,13 @@ export function PrivacyPolicy() {
             <p className="text-sm text-slate-400 leading-relaxed">Prikupljamo samo podatke koje vi sami unesete:</p>
             <ul className="text-sm text-slate-400 space-y-2 list-none pl-0">
               {[
-                'Email adresa — koristi se isključivo za prijavu i tehničku komunikaciju (verifikacija naloga, resetovanje lozinke).',
-                'Lozinka — čuva se isključivo u hashovanom obliku (bcrypt); niko, uključujući administratora, ne može videti vašu lozinku.',
-                'Finansijski podaci — transakcije, budžet i podešavanja koje unesete.',
-                'Ime i prezime — opciono, prikazuje se samo vama unutar aplikacije.',
+                'Email adresa: koristi se isključivo za prijavu i tehničku komunikaciju (potvrda naloga, promena lozinke).',
+                'Lozinka: čuva se isključivo u hashovanom obliku (bcrypt); niko, uključujući administratora, ne može videti vašu lozinku.',
+                'Finansijski podaci: transakcije, budžet i podešavanja koje unesete.',
+                'Ime i prezime: opciono; čuva se uz vaš nalog i u aplikaciji ga vidite samo vi.',
               ].map((item, i) => (
                 <li key={i} className="flex gap-2">
-                  <span className="text-orange-500 shrink-0">—</span>
+                  <span className="text-orange-500 shrink-0">•</span>
                   <span>{item}</span>
                 </li>
               ))}
@@ -93,13 +84,23 @@ export function PrivacyPolicy() {
           </section>
 
           <section className="space-y-3">
+            <h2 className="text-base font-bold text-white">Ko ima pristup</h2>
+            <p className="text-sm text-slate-400 leading-relaxed">
+              Administrator aplikacije tehnički ima pristup bazi i može da vidi podatke. Ne pregleda ih, ne koristi i ne deli.
+              Pored toga, podaci prolaze kroz ove servise: <strong className="text-white">Supabase</strong> (baza i prijava),{' '}
+              <strong className="text-white">Vercel</strong> (hosting), <strong className="text-white">Google/Gmail</strong> (slanje
+              emailova za potvrdu i lozinku) i <strong className="text-white">Cloudflare Turnstile</strong> (provera „nisam robot").
+            </p>
+          </section>
+
+          <section className="space-y-3">
             <h2 className="text-base font-bold text-white">Vaša prava</h2>
             <p className="text-sm text-slate-400 leading-relaxed">
-              Imate pravo da u svakom trenutku zatražite brisanje naloga i svih podataka. Zahtev šaljete na{' '}
+              Nalog i sve podatke možete sami obrisati u <strong className="text-white">Podešavanja → Obriši nalog</strong>.
+              Brisanje je odmah i trajno. Za sve ostalo pišite na{' '}
               <a href="mailto:algo_founder@proton.me" className="text-orange-400 hover:text-orange-300">
                 algo_founder@proton.me
-              </a>{' '}
-              — podaci se brišu u roku od 30 dana.
+              </a>.
             </p>
           </section>
 
@@ -107,13 +108,13 @@ export function PrivacyPolicy() {
             <h2 className="text-base font-bold text-white">Bezbednost</h2>
             <ul className="text-sm text-slate-400 space-y-2 list-none pl-0">
               {[
-                'Lozinke su hashovane (bcrypt) — niko ih ne može pročitati.',
+                'Lozinke su hashovane (bcrypt), niko ih ne može pročitati.',
                 'Sav prenos podataka je enkriptovan (HTTPS).',
                 'Svaki korisnik vidi isključivo sopstvene podatke (RLS).',
-                'Invite kodovi se automatski brišu nakon 7 dana.',
+                'Registraciju i prijavu štiti provera „nisam robot" (Cloudflare Turnstile).',
               ].map((item, i) => (
                 <li key={i} className="flex gap-2">
-                  <span className="text-orange-500 shrink-0">—</span>
+                  <span className="text-orange-500 shrink-0">•</span>
                   <span>{item}</span>
                 </li>
               ))}

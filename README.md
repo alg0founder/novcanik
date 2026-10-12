@@ -6,22 +6,19 @@ Dostupna na: [novcanik.vercel.app](https://novcanik.vercel.app)
 
 ---
 
-## Privatnost i anonimnost
+## Privatnost
 
-Repozitorijum je javan kako bi svako mogao da proveri kako aplikacija rukuje podacima korisnika.
+Repozitorijum je javan da bi svako mogao da proveri kako aplikacija rukuje podacima.
 
-Aplikacija je dizajnirana od temelja sa ciljem da ne zna ko ste vi:
-
-- **Email adresa** se ne verifikuje kao lični identitet — možete koristiti bilo koji email
-- **Ime i prezime** nisu obavezni i ne proveravaju se
-- **Pristupni kodovi** (invite) generišu se nasumično i automatski se brišu nakon 7 dana — ne postoji zapis o tome kome je koji kod dodeljen
-- **U bazi podataka** vaš nalog postoji isključivo kao nasumični tehnički identifikator (UUID)
-
-Rezultat je da ne postoji mogućnost da se podaci u aplikaciji povežu sa stvarnim identitetom korisnika.
+- **Email adresa** se potvrđuje linkom, ali može biti bilo koja adresa, ne mora biti vezana za vaše ime
+- **Ime i prezime** su opcioni
+- **Svaki nalog** kroz aplikaciju i API vidi samo svoje podatke (RLS na nivou baze)
+- **Administrator baze** tehnički ima pristup svim podacima; ne koristi ih i ne deli
+- **Brisanje naloga**: korisnik sam briše nalog i sve podatke iz Podešavanja
 
 ### Zaštita podataka
 
-Svaka tabela u bazi ima Row Level Security (RLS) primenjen na nivou baze, ne samo u kodu aplikacije. Nijedan upit, skripta niti API poziv ne može da vrati podatke drugog korisnika.
+Svaka tabela u bazi ima Row Level Security (RLS) primenjen na nivou baze, ne samo u kodu aplikacije. Nijedan upit sa korisničkim ključem ne može da vrati podatke drugog korisnika.
 
 Ovo možete sami proveriti čitanjem [`schema.sql`](./schema.sql).
 
@@ -51,9 +48,11 @@ Napravite `.env` fajl prema `.env.example` i dodajte sopstvene Supabase kredenci
 ```env
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
+# opciono: Cloudflare Turnstile site key; bez njega provera "nisam robot" je isključena
+VITE_TURNSTILE_SITE_KEY=
 ```
 
-Pokrenite šemu baze iz [`schema.sql`](./schema.sql) u Supabase SQL Editoru, zatim:
+Pokrenite šemu baze iz [`schema.sql`](./schema.sql) u Supabase SQL Editoru, pa redom fajlove iz [`migrations/`](./migrations/), zatim:
 
 ```bash
 npm run dev
