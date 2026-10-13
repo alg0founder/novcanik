@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth'
 import { HeroPhones } from '../components/landing/HeroPhones'
 import { StoryScroll } from '../components/landing/StoryScroll'
 import { FaqSection } from '../components/landing/FaqSection'
+import { PlanSteps } from '../components/landing/PlanSteps'
 
 const REPO_URL = 'https://github.com/alg0founder/novcanik'
 
@@ -29,14 +30,14 @@ export function Landing() {
       <main>
         <section className="px-5 md:px-8 pt-10 md:pt-16 text-center">
           <p className="animate-fade-up text-[11px] font-black text-orange-500 uppercase tracking-widest mb-5">
-            Novčanik · lične finansije
+            Novčanik · kućni budžet bez nagađanja
           </p>
           <h1 className="animate-fade-up [animation-delay:80ms] font-display text-[2.6rem] leading-[1.05] md:text-7xl font-extrabold text-white max-w-4xl mx-auto mb-6">
-            Plata legne prvog.<br />
-            <span className="text-orange-500">Do dvadesetog je nema.</span>
+            Znaj tačno gde ti odlazi <br className="hidden md:inline" />
+            <span className="text-orange-500">svaki dinar.</span>
           </h1>
           <p className="animate-fade-up [animation-delay:160ms] text-base md:text-lg text-slate-400 max-w-xl mx-auto leading-relaxed mb-8">
-            Novčanik ti pokaže gde je otišla. Trošak upišeš za par sekundi, ostalo sabere aplikacija.
+            Prati prihode i troškove, rasporedi platu unapred na račune, trošenje, investiranje i davanje, i ostavi više za sebe.
           </p>
           <div className="animate-fade-up [animation-delay:240ms] flex flex-wrap justify-center items-center gap-4 mb-3">
             <Link to="/login?tab=signup" className={primaryCta}>
@@ -51,6 +52,8 @@ export function Landing() {
           </p>
           <HeroPhones />
         </section>
+
+        <PlanSteps />
 
         <section className="pb-10 md:pb-20">
           <StoryScroll />

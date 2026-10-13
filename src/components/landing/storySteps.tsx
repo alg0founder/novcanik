@@ -33,8 +33,8 @@ export const STORY_STEPS: StoryStep[] = [
   {
     tab: 'budzet',
     kicker: '03 · Budžet',
-    title: 'Pre nego što potrošiš, znaš koliko smeš.',
-    text: 'Računi se oduzmu sami. Ostatak deliš na trošenje, investiranje i davanje, po pravilu 50/20/20/10 ili kako tebi odgovara. Traka na vrhu pokazuje kako je podeljena cela plata.',
+    title: 'Investiraš na početku meseca, ne od ostatka.',
+    text: 'Računi se oduzmu sami, a ostatak deliš na trošenje, investiranje i davanje po pravilu 50/20/20/10 ili po svom. Traka na vrhu pokazuje kako je podeljena cela plata, pa svaki dinar koji skineš sa računa odmah vidiš kao više za sve ostalo.',
     screen: <BudgetScreen />,
   },
   {
